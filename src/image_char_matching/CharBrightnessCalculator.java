@@ -1,23 +1,25 @@
 package image_char_matching;
 
+// TODO: Add documentation
 /**
  * simply gets a boolean table and calculates the brightness level describing the character.
+ *
  * @author ortar
  */
 public class CharBrightnessCalculator {
-
-
-    public static double calculateCharBrightness(char c){
-        boolean[][] charImg = CharConverter.convertToBoolArray(c);
+    public static float calculateCharBrightness(char c) {
+        boolean[][] charBinaryImage = CharConverter.convertToBoolArray(c);
+        int totalPixels = charBinaryImage.length * charBinaryImage[0].length;
         int whitePixels = 0;
-        int totalPixels = (charImg[0].length * charImg.length);
-        for (int i = 0; i < charImg.length; i++) {
-            for (int j = 0; j < charImg[i].length; j++) {
-                if (charImg[i][j]) {
+
+        for (boolean[] row : charBinaryImage) {
+            for (boolean isPixelWhite : row) {
+                if (isPixelWhite) {
                     whitePixels++;
                 }
             }
         }
-        return (double) whitePixels / (double) totalPixels;
+
+        return whitePixels / (float) totalPixels;
     }
 }

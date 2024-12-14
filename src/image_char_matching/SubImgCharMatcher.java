@@ -1,5 +1,6 @@
 package image_char_matching;
 
+// TODO: Add documentation
 public class SubImgCharMatcher {
 
     private CharBrightnessMap brightnessMap;
@@ -7,19 +8,19 @@ public class SubImgCharMatcher {
     public SubImgCharMatcher(char[] charset) {
         this.brightnessMap = new CharBrightnessMap();
         for (char c : charset) {
-            addChar(c);
+            this.addChar(c);
         }
     }
 
-    public char getCharByImageBrightness(double brightness){
-        return brightnessMap.getCharByNormalizedBrightness(brightness);
+    public char getCharByImageBrightness(float brightness){
+        return this.brightnessMap.getCharByNormalizedBrightness(brightness);
     }
 
     public void addChar(char c){
-        brightnessMap.addChar(c);
+        this.brightnessMap.addChar(c);
     }
 
     public void removeChar(char c){
-        brightnessMap.removeChar(c);
+        this.brightnessMap.removeChar(c);
     }
 }
