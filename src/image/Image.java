@@ -44,7 +44,7 @@ public class Image {
      * @param pixelArray a 2D array representing the image's pixels.
      * @param width      the width of the image.
      * @param height     the height of the image.
-     *                                                       TODO: Check validity
+     *                                     TODO: Check validity
      */
     public Image(Color[][] pixelArray, int width, int height) {
         this.pixelArray = pixelArray;
@@ -77,7 +77,7 @@ public class Image {
      * @param y the column index of the pixel (0-based).
      * @return the Color object of the specified pixel.
      * @throws ArrayIndexOutOfBoundsException if the indices are out of bounds.
-     *                                               TODO: Throws and catch exception
+     *                         TODO: Throws and catch exception
      */
     public Color getPixel(int x, int y) {
         return this.pixelArray[x][y];
@@ -88,7 +88,7 @@ public class Image {
      *
      * @param fileName the name of the output file (without extension).
      * @throws RuntimeException if an error occurs while writing the file.
-     *                                        TODO: Throws and catch exception
+     *                                                    TODO: Throws and catch exception
      */
     public void saveImage(String fileName) {
         // Initialize BufferedImage, assuming Color[][] is already properly populated.

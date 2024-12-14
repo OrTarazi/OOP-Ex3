@@ -1,4 +1,5 @@
 import image.Image;
+import image.ImageBrightness;
 import image.ImageDivision;
 import image.ImagePadding;
 
@@ -6,7 +7,7 @@ public class Main {
     public static void main(String[] args) {
         try {
             Image image = new Image("board.jpeg");
-                Image paddedImage = ImagePadding.padImage(image);
+            Image paddedImage = ImagePadding.padImage(image);
             paddedImage.saveImage("newImg");
             Image[][] subImages = ImageDivision.divideToImages(image, 2);
             for (int i = 0; i < subImages.length; i++) {

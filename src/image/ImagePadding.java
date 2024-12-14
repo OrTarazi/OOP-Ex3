@@ -65,6 +65,7 @@ public class ImagePadding {
         // Copy original image pixels into the center of the padded matrix
         for (int row = 0; row < image.getHeight(); row++) {
             for (int col = 0; col < image.getWidth(); col++) {
+                // TODO: check deep copy
                 paddedPixelMatrix[paddingSizeHeight + row][paddingSizeWidth + col] = image.getPixel(row, col);
             }
         }
@@ -83,7 +84,6 @@ public class ImagePadding {
      */
     private static void applyPadding(Color[][] paddedPixelMatrix, Image image,
                                      int paddingSizeHeight, int paddingSizeWidth) {
-        // Apply padding to the top and bottom sides
         for (int row = 0; row < paddedPixelMatrix.length; row++) {
             for (int col = 0; col < paddedPixelMatrix[0].length; col++) {
                 if (row < paddingSizeHeight || row >= image.getHeight() + paddingSizeHeight ||
