@@ -17,8 +17,11 @@ public class Main {
     }
     public static void main(String[] args){
         CharBrightnessMap map = new CharBrightnessMap();
-        for (int i = 0; i < 255; i++) {
-            map.addCharBrightness((char)i);
+        for (int i = 65; i < 69; i++) {
+            map.addChar((char)i);
         }
+        map.removeChar((char)66);
+        map.removeChar((char)67);
+        System.out.println("test");
     }
 }

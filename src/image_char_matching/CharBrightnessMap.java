@@ -1,61 +1,59 @@
 package image_char_matching;
+
 import java.util.Map;
 import java.util.TreeMap;
 
 public class CharBrightnessMap {
-    private final TreeMap<Integer, Double> brightnessMap;
-    private double minBrightness = 0;
+    private final TreeMap<Integer, Double> rawBrightnessMap;       // Stores raw brightness values
+    private final TreeMap<Integer, Double> normalizedBrightnessMap; // Stores normalized brightness values
+    private double minBrightness = 1;
     private double maxBrightness = 0;
 
     public CharBrightnessMap() {
-        brightnessMap = new TreeMap<>();
+        rawBrightnessMap = new TreeMap<>();
+        normalizedBrightnessMap = new TreeMap<>();
     }
 
-    public void addCharBrightness(char c) {
+    public void addChar(char c) {
         double brightness = CharBrightnessCalculator.calculateCharBrightness(c);
-        if (brightness < minBrightness) {
-            minBrightness = brightness;
-        }
-        if (brightness > maxBrightness) {
-            maxBrightness = brightness;
-        }
+        rawBrightnessMap.put((int) c, brightness); // Always store raw brightness
 
-        brightnessMap.put((int) c, brightness);
+        // Update min and max brightness values
+        adjustMinAndMaxBrightness(brightness);
+
+        // Normalize and store in the normalized map
+        if (rawBrightnessMap.size() > 1) {
+            normalizedBrightnessMap.put((int) c, normalizeBrightness(brightness));
+            normalizeAllValues();
+        } else {
+            normalizedBrightnessMap.put((int) c, brightness);
+        }
     }
 
-    public double getBrightness(char c) {
-        return brightnessMap.getOrDefault((int) c, -1.0);
+    public double getRawBrightness(char c) {
+        return rawBrightnessMap.getOrDefault((int) c, -1.0);
     }
-
 
     public double getNormalizedBrightness(char c) {
-        double rawBrightness = getBrightness(c);
-        if (rawBrightness == -1.0) {
-            return -1.0; // not found
-        }
-        return normalizeBrightness(rawBrightness);
+        return normalizedBrightnessMap.getOrDefault((int) c, -1.0);
     }
 
     public void removeChar(char c) {
-        Double brightness = brightnessMap.remove((int) c);
+        rawBrightnessMap.remove((int) c);
+        normalizedBrightnessMap.remove((int) c);
 
-        if (brightness != null) {
+        // Recalculate min and max brightness
+        recalculateMinMaxBrightness();
 
-            if (brightness == minBrightness || brightness == maxBrightness) {
-                recalculateMinMaxBrightness();
-            }
+        // Renormalize if necessary
+        if (rawBrightnessMap.size() > 1) {
+            normalizeAllValues();
         }
     }
 
-    /**
-     * Does a search in the map for a given brightness value, and returns the closest matching character.
-     * @param brightness the brightness value to match.
-     * @return the character that best matches the provided brightness.
-     */
-    public char getCharByBrightness(double brightness) {
-        // Todo check if these two below actually run in O(log n):
-        Map.Entry<Integer, Double> lower = brightnessMap.floorEntry((int) brightness);
-        Map.Entry<Integer, Double> higher = brightnessMap.ceilingEntry((int) brightness);
+    public char getCharByNormalizedBrightness(double brightness) {
+        Map.Entry<Integer, Double> lower = normalizedBrightnessMap.floorEntry((int) brightness);
+        Map.Entry<Integer, Double> higher = normalizedBrightnessMap.ceilingEntry((int) brightness);
 
         if (lower == null && higher == null) {
             throw new IllegalStateException("No characters in brightness map.");
@@ -68,26 +66,36 @@ public class CharBrightnessMap {
         }
     }
 
-
-    public double normalizeBrightness(double charBrightness) {
-
-        if (maxBrightness == minBrightness) {
-            return 0.0;
+    private void normalizeAllValues() {
+        normalizedBrightnessMap.clear();
+        for (Map.Entry<Integer, Double> entry : rawBrightnessMap.entrySet()) {
+            double normalized = normalizeBrightness(entry.getValue());
+            normalizedBrightnessMap.put(entry.getKey(), normalized);
         }
-        return (charBrightness - minBrightness) / (maxBrightness - minBrightness);
+    }
+
+    private void adjustMinAndMaxBrightness(double brightness) {
+        if (brightness < minBrightness) {
+            minBrightness = brightness;
+        }
+        if (brightness > maxBrightness) {
+            maxBrightness = brightness;
+        }
     }
 
     private void recalculateMinMaxBrightness() {
-        minBrightness = 0;
+        minBrightness = 1;
         maxBrightness = 0;
 
-        for (double brightness : brightnessMap.values()) {
-            if (brightness < minBrightness) {
-                minBrightness = brightness;
-            }
-            if (brightness > maxBrightness) {
-                maxBrightness = brightness;
-            }
+        for (double brightness : rawBrightnessMap.values()) {
+            adjustMinAndMaxBrightness(brightness);
         }
+    }
+
+    private double normalizeBrightness(double brightness) {
+        if (minBrightness == maxBrightness) {
+            return brightness; // Avoid division by zero when all values are identical
+        }
+        return (brightness - minBrightness) / (maxBrightness - minBrightness);
     }
 }
