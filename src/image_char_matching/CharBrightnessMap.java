@@ -4,8 +4,8 @@ import java.util.TreeMap;
 
 public class CharBrightnessMap {
     private final TreeMap<Integer, Double> brightnessMap;
-    private double minBrightness = Double.MAX_VALUE;  // Initializing to a large value
-    private double maxBrightness = Double.MIN_VALUE;  // Initializing to a very low value
+    private double minBrightness = 0;
+    private double maxBrightness = 0;
 
     public CharBrightnessMap() {
         brightnessMap = new TreeMap<>();
@@ -27,11 +27,11 @@ public class CharBrightnessMap {
         return brightnessMap.getOrDefault((int) c, -1.0);
     }
 
-    // Retrieves the normalized brightness for a given character
+
     public double getNormalizedBrightness(char c) {
         double rawBrightness = getBrightness(c);
         if (rawBrightness == -1.0) {
-            return -1.0;  // Character not found
+            return -1.0; // not found
         }
         return normalizeBrightness(rawBrightness);
     }
@@ -40,7 +40,7 @@ public class CharBrightnessMap {
         Double brightness = brightnessMap.remove((int) c);
 
         if (brightness != null) {
-            // Check if the removed character was the min or max
+
             if (brightness == minBrightness || brightness == maxBrightness) {
                 recalculateMinMaxBrightness();
             }
@@ -79,7 +79,7 @@ public class CharBrightnessMap {
 
     private void recalculateMinMaxBrightness() {
         minBrightness = 0;
-        maxBrightness = 1;
+        maxBrightness = 0;
 
         for (double brightness : brightnessMap.values()) {
             if (brightness < minBrightness) {
