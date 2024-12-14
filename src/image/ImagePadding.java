@@ -36,12 +36,7 @@ public class ImagePadding {
         return new Image(paddedPixelMatrix, paddedImageWidth, paddedImageHeight);
     }
 
-    /**
-     * Finds the next power of two greater than or equal to the given number.
-     *
-     * @param number The number to find the next power of two for.
-     * @return The next power of two greater than or equal to the given number.
-     */
+    // Finds the next power of two greater than or equal to the given number
     private static int getNextPower(int number) {
         return (int) Math.pow(POWER_BASE, Math.ceil(Math.log(number) / Math.log(POWER_BASE)));
     }
@@ -51,19 +46,19 @@ public class ImagePadding {
      *
      * @param imageSize       The original size of the image.
      * @param paddedImageSize The new padded size of the image.
-     * @return The amount of padding required.
+     * @return The size in pixels of padding required.
      */
     private static int getPaddingSize(int imageSize, int paddedImageSize) {
         return (paddedImageSize - imageSize) / 2;
     }
 
     /**
-     * Initializes the padded pixel matrix by copying the original image pixels and applying padding.
+     * Fills the padded pixel matrix by copying the original image pixels and applying padding.
      *
      * @param paddedPixelMatrix The matrix to store the padded image pixels.
      * @param image             The original image.
-     * @param paddingSizeHeight The amount of vertical padding.
-     * @param paddingSizeWidth  The amount of horizontal padding.
+     * @param paddingSizeHeight The size in pixels of vertical padding (one-sided padding)
+     * @param paddingSizeWidth  The size in pixels of horizontal padding (one-sided padding)
      */
     private static void fillPaddedPixelMatrix(Color[][] paddedPixelMatrix, Image image,
                                               int paddingSizeHeight, int paddingSizeWidth) {
@@ -79,12 +74,12 @@ public class ImagePadding {
     }
 
     /**
-     * Applies padding around the image in the padded pixel matrix.
+     * Applies padding around the image in the padded pixel matrix (all sides)
      *
      * @param paddedPixelMatrix The matrix to store the padded image pixels.
      * @param image             The original image.
-     * @param paddingSizeHeight The amount of vertical padding.
-     * @param paddingSizeWidth  The amount of horizontal padding.
+     * @param paddingSizeHeight The size in pixels of vertical padding (one-sided padding)
+     * @param paddingSizeWidth  The size in pixels of horizontal padding (one-sided padding)
      */
     private static void applyPadding(Color[][] paddedPixelMatrix, Image image,
                                      int paddingSizeHeight, int paddingSizeWidth) {
