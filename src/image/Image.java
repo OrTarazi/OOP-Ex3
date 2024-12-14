@@ -80,7 +80,7 @@ public class Image {
      *                                               TODO: Throws and catch exception
      */
     public Color getPixel(int x, int y) {
-        return pixelArray[x][y];
+        return this.pixelArray[x][y];
     }
 
     /**
