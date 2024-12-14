@@ -18,6 +18,7 @@ public class CharBrightnessMap {
         double brightness = CharBrightnessCalculator.calculateCharBrightness(c);
         rawBrightnessMap.put((int) c, brightness); // Always store raw brightness
 
+        // TODO try to
         if (rawBrightnessMap.size() > 1 && (brightness>maxBrightness || brightness<minBrightness))
         {
             adjustMinAndMaxBrightness(brightness);
@@ -65,6 +66,7 @@ public class CharBrightnessMap {
             return (char) (int) lower.getKey();
         }
     }
+
 
     private void normalizeAllValues() {
         normalizedBrightnessMap.clear();
