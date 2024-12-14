@@ -29,8 +29,8 @@ public class ImagePadding {
 
         Color[][] paddedPixelMatrix = new Color[paddedImageHeight][paddedImageWidth];
 
-        // Initialize the padded pixel matrix with padding color (white)
-        initPaddedPixelMatrix(paddedPixelMatrix, image, paddingSizeHeight, paddingSizeWidth);
+        // Fill the padded pixel matrix with padding color (white)
+        fillPaddedPixelMatrix(paddedPixelMatrix, image, paddingSizeHeight, paddingSizeWidth);
 
         // Create and return the padded image
         return new Image(paddedPixelMatrix, paddedImageWidth, paddedImageHeight);
@@ -65,7 +65,7 @@ public class ImagePadding {
      * @param paddingSizeHeight The amount of vertical padding.
      * @param paddingSizeWidth  The amount of horizontal padding.
      */
-    private static void initPaddedPixelMatrix(Color[][] paddedPixelMatrix, Image image,
+    private static void fillPaddedPixelMatrix(Color[][] paddedPixelMatrix, Image image,
                                               int paddingSizeHeight, int paddingSizeWidth) {
         // Copy original image pixels into the center of the padded matrix
         for (int row = 0; row < image.getHeight(); row++) {
