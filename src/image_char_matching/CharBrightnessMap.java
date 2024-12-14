@@ -18,15 +18,16 @@ public class CharBrightnessMap {
         double brightness = CharBrightnessCalculator.calculateCharBrightness(c);
         rawBrightnessMap.put((int) c, brightness); // Always store raw brightness
 
-        // Update min and max brightness values
-        adjustMinAndMaxBrightness(brightness);
-
-        // Normalize and store in the normalized map
-        if (rawBrightnessMap.size() > 1) {
+        if (rawBrightnessMap.size() > 1 && (brightness > maxBrightness|| brightness < minBrightness))
+        {
+            adjustMinAndMaxBrightness(brightness);
             normalizedBrightnessMap.put((int) c, normalizeBrightness(brightness));
             normalizeAllValues();
-        } else {
-            normalizedBrightnessMap.put((int) c, brightness);
+
+        }
+        else if (rawBrightnessMap.size() > 1)
+        {
+            normalizedBrightnessMap.put((int) c, normalizeBrightness(brightness));
         }
     }
 
@@ -39,16 +40,15 @@ public class CharBrightnessMap {
     }
 
     public void removeChar(char c) {
-        rawBrightnessMap.remove((int) c);
+        double brightness = rawBrightnessMap.remove((int) c);
         normalizedBrightnessMap.remove((int) c);
-
-        // Recalculate min and max brightness
-        recalculateMinMaxBrightness();
-
-        // Renormalize if necessary
-        if (rawBrightnessMap.size() > 1) {
-            normalizeAllValues();
+        if (brightness == maxBrightness || brightness == minBrightness){
+            recalculateMinMaxBrightness();
+            if (rawBrightnessMap.size() > 1) {
+                normalizeAllValues();
+            }
         }
+
     }
 
     public char getCharByNormalizedBrightness(double brightness) {
