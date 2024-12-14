@@ -1,10 +1,8 @@
 package ascii_art;
 
 import image.Image;
-import image.ImageBrightnessCalculator;
+import image.ImageBrightness;
 import image_char_matching.*;
-
-import java.awt.*;
 
 public class AsciiArtAlgorithm {
 
@@ -28,7 +26,7 @@ public class AsciiArtAlgorithm {
         for (int y = 0; y < resolution_height; y++) {
             for (int x = 0; x < resolution_width; x++) {
                 asciiImage[y][x] =
-                        charMatcher.getCharByImageBrightness(ImageBrightnessCalculator.calculateImageBrightness(image));
+                        charMatcher.getCharByImageBrightness(ImageBrightness.calculateImageBrightness(image));
             }
         }
         return asciiImage;
