@@ -65,7 +65,6 @@ public class ImagePadding {
         // Copy original image pixels into the center of the padded matrix
         for (int row = 0; row < image.getHeight(); row++) {
             for (int col = 0; col < image.getWidth(); col++) {
-                // TODO: check deep copy
                 paddedPixelMatrix[paddingSizeHeight + row][paddingSizeWidth + col] = image.getPixel(row, col);
             }
         }
