@@ -1,7 +1,6 @@
 package image_char_matching;
 
 // TODO: Add documentation
-
 /**
  * simply gets a boolean table and calculates the brightness level describing the character.
  *
