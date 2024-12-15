@@ -15,7 +15,6 @@ public class ImageBrightness {
 
         for (int row = 0; row < height; row++) {
             for (int col = 0; col < width; col++) {
-                // TODO: check arguments order
                 grayScaleTotal += colorToGrayscale(image.getPixel(row, col));
             }
         }
