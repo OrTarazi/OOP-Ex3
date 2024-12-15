@@ -19,13 +19,11 @@ public class AsciiArtAlgorithm {
     private int resolution;
 
     // TODO: constructor doc
-    public AsciiArtAlgorithm(Image image, char[] charset, int resolution) {
+    public AsciiArtAlgorithm(Image image, SubImgCharMatcher charMatcher, int resolution) {
         this.image = image;
-        this.charMatcher = new SubImgCharMatcher(charset);
+        this.charMatcher = charMatcher;
         this.resolution = resolution;
     }
-
-    // cant change the signature
 
     /**
      * runs the algorithm from start to finish.

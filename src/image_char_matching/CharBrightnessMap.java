@@ -163,4 +163,20 @@ public class CharBrightnessMap {
             this.maxBrightness = addedBrightness;
         }
     }
+
+    public int getSize() {
+        return this.rawBrightnessMap.size();
+    }
+
+    public void printChars() {
+        int count = 0;
+        for (int key : this.rawBrightnessMap.keySet()) {
+            System.out.print(key);
+            count++;
+            if (count < this.rawBrightnessMap.size()) {
+                System.out.print(" "); // Add space only between characters
+            }
+        }
+        System.out.println(); // End with a newline
+    }
 }

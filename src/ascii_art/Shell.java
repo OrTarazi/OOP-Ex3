@@ -2,6 +2,7 @@ package ascii_art;
 
 import ascii_output.ConsoleAsciiOutput;
 import image.Image;
+import image_char_matching.SubImgCharMatcher;
 
 public class Shell {
     // Default parameters
@@ -23,18 +24,19 @@ public class Shell {
     private static final String INVALID_COMMAND_MESSAGE = "Did not execute due to incorrect command.";
     private static final String INVALID_CHARSET_SIZE_MESSAGE = "Did not execute. Charset is too small.";
 
-    private int resolution;
     private Image image;
-    private char[] charset;
+    private SubImgCharMatcher charMatcher;
+    private int resolution;
 
     public Shell() {
         this.resolution = DEFAULT_RESOLUTION;
 
         // Init default chars set
-        this.charset = new char[DEFAULT_LAST_CHAR - DEFAULT_FIRST_CHAR + 1];
+        char[] charset = new char[DEFAULT_LAST_CHAR - DEFAULT_FIRST_CHAR + 1];
         for (int charIndex = DEFAULT_FIRST_CHAR; charIndex <= DEFAULT_LAST_CHAR; charIndex++) {
             charset[charIndex - DEFAULT_FIRST_CHAR] = (char) charIndex;
         }
+        this.charMatcher = new SubImgCharMatcher(charset);
     }
 
     public void run(String imageName) {
@@ -60,7 +62,7 @@ public class Shell {
     private void runCommand(String command) {
         switch (command) {
             case VIEW_CHARS:
-                // TODO: implement method
+                this.charMatcher.printChars();
                 break;
             case ADD_CHAR:
                 // TODO: implement method
@@ -78,7 +80,7 @@ public class Shell {
                 // TODO: implement method and change relevant parts in code
                 break;
             case ASCII_ART:
-                if (this.charset.length < MIN_CHARSET_SIZE) {
+                if (this.charMatcher.getCharsNumber()< MIN_CHARSET_SIZE) {
                     System.out.println(INVALID_CHARSET_SIZE_MESSAGE);
                 } else {
                     this.runAsciiArt();
@@ -91,7 +93,7 @@ public class Shell {
 
     private void runAsciiArt() {
         // TODO: Check if can we prevent repeated creation
-        AsciiArtAlgorithm asciiArt = new AsciiArtAlgorithm(this.image, this.charset, this.resolution);
+        AsciiArtAlgorithm asciiArt = new AsciiArtAlgorithm(this.image, this.charMatcher, this.resolution);
         char[][] asciiImage = asciiArt.run();
 
         // TODO: change to output outing
@@ -101,7 +103,7 @@ public class Shell {
 
     public static void main(String[] args) {
         Shell shell = new Shell();
-        String imageName = "cat.jpeg"; // Assume valid input: path file
+        String imageName = args[0]; // Assume valid input: path file
         shell.run(imageName);
     }
 }
