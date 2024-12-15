@@ -46,6 +46,7 @@ public class CharBrightnessMap {
         return this.normalizedBrightnessMap.getOrDefault((int) c, -1.0f);
     }
 
+    // TODO: handle exceptions
     public char getCharByNormalizedBrightness(float brightness) {
         Map.Entry<Integer, Float> closest = null;
         float smallestDifference = Float.MAX_VALUE;
@@ -79,7 +80,6 @@ public class CharBrightnessMap {
         }
 
     }
-    // TODO: make sure we understand and handle exceptions
 
     private void recalculateMinMaxBrightness() {
         // TODO: init min and max initial values with constants
