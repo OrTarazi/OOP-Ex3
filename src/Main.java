@@ -9,7 +9,7 @@ public class Main {
     public static void main(String[] args) {
         try {
             Image image = new Image("cat.jpeg");
-            char[] charset = new char[]{'0', '1', '3', '4', '6', '7',};
+            char[] charset = new char[]{'0', '1', '3', '4', '6', '7'};
 //            char[] charset = new char[]{'0', '1', '3', '4', '6', '7', '`', '.', 'A', 'B', 'C', 'E', 'K',
 //                    'M', 'N', 'T', 'W', '!', '"', '=', '*', '&', '%', '$', '{', ';', '\'', ':', '+', '@'};
 
