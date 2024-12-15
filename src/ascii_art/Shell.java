@@ -1,8 +1,11 @@
 package ascii_art;
 
 import ascii_output.ConsoleAsciiOutput;
+import exceptions.InvalidCharsetSizeException;
 import image.Image;
 import image_char_matching.SubImgCharMatcher;
+
+import java.io.IOException;
 
 public class Shell {
     // Default parameters
@@ -22,7 +25,6 @@ public class Shell {
     private static final String EXIT_COMMAND_MESSAGE = "EXIT";
     private static final String ENTER_COMMAND_MESSAGE = ">>> ";
     private static final String INVALID_COMMAND_MESSAGE = "Did not execute due to incorrect command.";
-    private static final String INVALID_CHARSET_SIZE_MESSAGE = "Did not execute. Charset is too small.";
 
     private Image image;
     private SubImgCharMatcher charMatcher;
@@ -60,38 +62,43 @@ public class Shell {
     }
 
     private void runCommand(String command) {
-        switch (command) {
-            case VIEW_CHARS:
-                this.charMatcher.printChars();
-                break;
-            case ADD_CHAR:
-                // TODO: implement method
-                break;
-            case REMOVE_CHAR:
-                // TODO: implement method
-                break;
-            case CHANGE_RESOLUTION:
-                // TODO: implement method
-                break;
-            case CHANGE_OUTPUT:
-                // TODO: implement method
-                break;
-            case CHANGE_ROUND:
-                // TODO: implement method and change relevant parts in code
-                break;
-            case ASCII_ART:
-                if (this.charMatcher.getCharsNumber()< MIN_CHARSET_SIZE) {
-                    System.out.println(INVALID_CHARSET_SIZE_MESSAGE);
-                } else {
+        try {
+            switch (command) {
+                case VIEW_CHARS:
+                    this.charMatcher.printChars();
+                    break;
+                case ADD_CHAR:
+                    // TODO: implement method
+                    break;
+                case REMOVE_CHAR:
+                    // TODO: implement method
+                    break;
+                case CHANGE_RESOLUTION:
+                    // TODO: implement method
+                    break;
+                case CHANGE_OUTPUT:
+                    // TODO: implement method
+                    break;
+                case CHANGE_ROUND:
+                    // TODO: implement method and change relevant parts in code
+                    break;
+                case ASCII_ART:
                     this.runAsciiArt();
-                }
-                break;
-            default:
-                System.out.println(INVALID_COMMAND_MESSAGE);
+                    break;
+                default:
+                    // TODO: Check if exception needed
+                    System.out.println(INVALID_COMMAND_MESSAGE);
+            }
+        } catch (InvalidCharsetSizeException e) {
+            System.out.println(e.getMessage());
         }
     }
 
-    private void runAsciiArt() {
+    private void runAsciiArt() throws InvalidCharsetSizeException {
+        if (this.charMatcher.getCharsNumber() < MIN_CHARSET_SIZE) {
+            throw new InvalidCharsetSizeException();
+        }
+
         // TODO: Check if can we prevent repeated creation
         AsciiArtAlgorithm asciiArt = new AsciiArtAlgorithm(this.image, this.charMatcher, this.resolution);
         char[][] asciiImage = asciiArt.run();

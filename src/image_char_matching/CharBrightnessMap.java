@@ -171,12 +171,11 @@ public class CharBrightnessMap {
     public void printChars() {
         int count = 0;
         for (int key : this.rawBrightnessMap.keySet()) {
-            System.out.print(key);
-            count++;
-            if (count < this.rawBrightnessMap.size()) {
-                System.out.print(" "); // Add space only between characters
+            System.out.print((char) key);
+            if (++count < this.rawBrightnessMap.size()) {
+                System.out.print(" ");
             }
         }
-        System.out.println(); // End with a newline
+        System.out.println();
     }
 }
