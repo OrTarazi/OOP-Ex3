@@ -30,13 +30,14 @@ public class CharBrightnessMap {
 
     /**
      * adds char to the ascii char set.
+     *
      * @param c char to be added to ascii set
      */
     public void addChar(char c) {
         float brightness = CharBrightnessCalculator.calculateCharBrightness(c);
         this.rawBrightnessMap.put((int) c, brightness); // Always store raw brightness
 
-        // TODO: Optimize conditions
+        // TODO: Optimize conditions or add comments
         if (this.rawBrightnessMap.size() > 1 &&
                 (brightness > this.maxBrightness || brightness < this.minBrightness)) {
             this.adjustMinAndMaxBrightness(brightness);
@@ -49,31 +50,12 @@ public class CharBrightnessMap {
         }
     }
 
-    // TODO: check if getters are needed
-
-    /**
-     * getter of raw map.
-     * @param c key
-     * @return value in the map of the key. returns -1 as a default value.
-     */
-    public float getRawBrightness(char c) {
-        return this.rawBrightnessMap.getOrDefault((int) c, MAP_MISS_VALUE);
-    }
-
-    /**
-     * getter of normalized map.
-     * @param c key
-     * @return value in the map of the key. returns -1 as a default value.
-     */
-    public float getNormalizedBrightness(char c) {
-        return this.normalizedBrightnessMap.getOrDefault((int) c, MAP_MISS_VALUE);
-    }
-
     // TODO: handle exceptions
 
     /**
      * searches for the key (Ascii char) with the minimal absolute difference between its value
      * (Brightness) and the given brightness
+     *
      * @param brightness calculated brightness of a sub-image.
      * @return best matching ascii char for the given brightness value, making it the best fit to represent
      * the sub-image in the final ascii art.
@@ -101,6 +83,7 @@ public class CharBrightnessMap {
 
     /**
      * gets a char, and deletes the entry with the char as aa key, from both normalized and raw maps.
+     *
      * @param c key in map to be removed
      */
     public void removeChar(char c) {
@@ -150,6 +133,7 @@ public class CharBrightnessMap {
      * re-evaluates the normalizedMap values per key.
      * the method is called smartly, only when adding an entry to the map where the brightness value
      * outreaches the current minimum and maximum.
+     *
      * @param addedBrightness the new brightness value in the map that changes the min/max values.
      * @return
      */
@@ -167,6 +151,7 @@ public class CharBrightnessMap {
      * re-evaluates the maximum and minimum brightness in the class' ascii-char set.
      * the method is called smartly, only when adding an entry to the map where the brightness value
      * outreaches the current minimum and maximum.
+     *
      * @param addedBrightness the new brightness value in the map that changes the min/max values.
      */
     private void adjustMinAndMaxBrightness(float addedBrightness) {
