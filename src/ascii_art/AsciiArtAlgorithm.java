@@ -18,10 +18,15 @@ public class AsciiArtAlgorithm {
     private SubImgCharMatcher charMatcher;
     private int resolution;
 
+    //TODO : check if is appropriate to declare enum here
+    public enum RoundType {
+        UP, DOWN, ABS
+    }
+
     // TODO: constructor doc
-    public AsciiArtAlgorithm(Image image, char[] charset, int resolution) {
+    public AsciiArtAlgorithm(Image image, char[] charset, int resolution, RoundType roundType) {
         this.image = image;
-        this.charMatcher = new SubImgCharMatcher(charset);
+        this.charMatcher = new SubImgCharMatcher(charset,roundType);
         this.resolution = resolution;
     }
 

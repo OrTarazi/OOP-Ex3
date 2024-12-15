@@ -2,7 +2,7 @@ import image.Image;
 import ascii_art.AsciiArtAlgorithm;
 import ascii_output.ConsoleAsciiOutput;
 import ascii_output.HtmlAsciiOutput;
-
+import ascii_art.AsciiArtAlgorithm.RoundType;
 public class Main {
     private static final int DEFAULT_RESOLUTION = 128;
 
@@ -13,7 +13,8 @@ public class Main {
 //            char[] charset = new char[]{'0', '1', '3', '4', '6', '7', '`', '.', 'A', 'B', 'C', 'E', 'K',
 //                    'M', 'N', 'T', 'W', '!', '"', '=', '*', '&', '%', '$', '{', ';', '\'', ':', '+', '@'};
 
-            AsciiArtAlgorithm asciiArtAlgorithm = new AsciiArtAlgorithm(image, charset, DEFAULT_RESOLUTION);
+            AsciiArtAlgorithm asciiArtAlgorithm = new AsciiArtAlgorithm(image, charset, DEFAULT_RESOLUTION,
+                    RoundType.ABS);
             char[][] asciiImage = asciiArtAlgorithm.run();
             ConsoleAsciiOutput consoleAsciiOutput = new ConsoleAsciiOutput();
             consoleAsciiOutput.out(asciiImage);

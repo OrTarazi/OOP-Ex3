@@ -2,6 +2,7 @@ package image_char_matching;
 
 import java.util.Map;
 import java.util.TreeMap;
+import ascii_art.AsciiArtAlgorithm.RoundType;
 
 /**
  * a data structure that wraps two instanes of TreeMap from java.Collections.
@@ -60,25 +61,45 @@ public class CharBrightnessMap {
      * @return best matching ascii char for the given brightness value, making it the best fit to represent
      * the sub-image in the final ascii art.
      */
-    public char getCharByNormalizedBrightness(float brightness) {
-        Map.Entry<Integer, Float> closest = null;
-        float smallestDifference = Float.MAX_VALUE;
+    public char getCharByNormalizedBrightness(float brightness, RoundType roundType) {
+        Map.Entry<Integer, Float> closestAbove = null;
+        Map.Entry<Integer, Float> closestBelow = null;
+
+        float smallestDifferenceAbove = Float.MAX_VALUE;
+        float smallestDifferenceBelow = Float.MIN_VALUE;
 
         for (Map.Entry<Integer, Float> entry : this.normalizedBrightnessMap.entrySet()) {
-            // TODO: change round in main
-            float difference = Math.abs(entry.getValue() - brightness);
+            // TODO make sure rounding works well. currently its not.
 
-            if (difference < smallestDifference) {
-                smallestDifference = difference;
-                closest = entry;
+            float difference = entry.getValue() - brightness;
+            if (difference > 0) {
+                if (difference < smallestDifferenceAbove) {
+                    smallestDifferenceAbove = difference;
+                    closestAbove = entry;
+                }
+            }
+            if (difference < 0) {
+                if (difference > smallestDifferenceBelow) {
+                    smallestDifferenceBelow = difference;
+                    closestBelow = entry;
+                }
             }
         }
 
-        if (closest == null) {
+        if (closestAbove == null || closestBelow == null) {
             throw new IllegalStateException("No characters in brightness map.");
         }
 
-        return (char) (int) closest.getKey();
+        switch (roundType) {
+            case ABS:
+                return (char) Math.max(Math.abs(closestAbove.getKey()), Math.abs(closestBelow.getKey()));
+            case DOWN:
+                return (char) (int) closestBelow.getKey();
+            case UP:
+                return (char) (int) closestAbove.getKey();
+            default:
+                return 0;
+        }
     }
 
     /**

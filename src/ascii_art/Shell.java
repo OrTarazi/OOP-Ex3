@@ -2,6 +2,9 @@ package ascii_art;
 
 import ascii_output.ConsoleAsciiOutput;
 import image.Image;
+import ascii_art.AsciiArtAlgorithm.RoundType;
+
+import java.io.IOException;
 
 public class Shell {
     // Default parameters
@@ -22,14 +25,21 @@ public class Shell {
     private static final String ENTER_COMMAND_MESSAGE = ">>> ";
     private static final String INVALID_COMMAND_MESSAGE = "Did not execute due to incorrect command.";
     private static final String INVALID_CHARSET_SIZE_MESSAGE = "Did not execute. Charset is too small.";
+    private static final String INVALID_RESOLUTION_MESSAGE = "Did not change resolution due to exceeding " +
+            "boundaries.";
+    private static final String INVALID_RESOLUTION_FORMAT_MESSAGE = "Did not change resolution due to " +
+            "incorrect format.";
+    private static final String INVALID_ROUND_MESSAGE = "Did not change rounding method due to incorrect " +
+            "format.";
 
     private int resolution;
     private Image image;
     private char[] charset;
+    private RoundType roundType;
 
     public Shell() {
         this.resolution = DEFAULT_RESOLUTION;
-
+        this.roundType = RoundType.ABS;
         // Init default chars set
         this.charset = new char[DEFAULT_LAST_CHAR - DEFAULT_FIRST_CHAR + 1];
         for (int charIndex = DEFAULT_FIRST_CHAR; charIndex <= DEFAULT_LAST_CHAR; charIndex++) {
@@ -56,6 +66,43 @@ public class Shell {
         System.out.print(ENTER_COMMAND_MESSAGE);
         return KeyboardInput.readLine();
     }
+
+    private void changeResolution(int newResolution) {
+        if (isResolutionLegal(newResolution)) {
+            this.resolution = newResolution;
+        }
+        else {
+            System.err.println(INVALID_RESOLUTION_MESSAGE);
+        }
+    }
+
+    /**
+     * checks if the desired resolution stands within the resolution boundaries defined in the exercise.
+     * @param inspectedResolution
+     * @return
+     */
+    private boolean isResolutionLegal(int inspectedResolution) {
+        int imgWidth = this.image.getWidth();
+        int imgHeight = this.image.getHeight();
+        int maximumRes = imgHeight*imgWidth;
+        int minimumRes = Math.max(1, imgWidth/imgHeight);
+        return inspectedResolution >= minimumRes && inspectedResolution <= maximumRes;
+    }
+
+    private void changeRoundType(String roundType) {
+        switch (roundType) {
+            case "up":
+                this.roundType = RoundType.UP;
+            case "down":
+                this.roundType = RoundType.DOWN;
+            case "abs":
+                this.roundType = RoundType.ABS;
+            default:
+                System.err.println(INVALID_ROUND_MESSAGE);
+                break;
+        }
+    }
+
 
     private void runCommand(String command) {
         switch (command) {
@@ -91,7 +138,8 @@ public class Shell {
 
     private void runAsciiArt() {
         // TODO: Check if can we prevent repeated creation
-        AsciiArtAlgorithm asciiArt = new AsciiArtAlgorithm(this.image, this.charset, this.resolution);
+        AsciiArtAlgorithm asciiArt = new AsciiArtAlgorithm(
+                this.image, this.charset, this.resolution, this.roundType);
         char[][] asciiImage = asciiArt.run();
 
         // TODO: change to output outing

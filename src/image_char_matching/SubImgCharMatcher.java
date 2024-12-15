@@ -1,19 +1,20 @@
 package image_char_matching;
-
+import ascii_art.AsciiArtAlgorithm.RoundType;
 /**
  * a facade for using the CharBrightnessMap and so simplifies handling removal and addition of ascii chars
  * to the set.
  */
 public class SubImgCharMatcher {
-
+    private RoundType roundType;
     private CharBrightnessMap brightnessMap;
 
     /**
      * constructor for the matcher
      * @param charset the initial set of ascii characters to be used in the ascii art.
      */
-    public SubImgCharMatcher(char[] charset) {
+    public SubImgCharMatcher(char[] charset, RoundType roundType) {
         this.brightnessMap = new CharBrightnessMap();
+        this.roundType = roundType;
         for (char c : charset) {
             this.addChar(c);
         }
@@ -29,7 +30,7 @@ public class SubImgCharMatcher {
      * the sub-image in the final ascii art.
      */
     public char getCharByImageBrightness(float brightness) {
-        return this.brightnessMap.getCharByNormalizedBrightness(brightness);
+        return this.brightnessMap.getCharByNormalizedBrightness(brightness, roundType);
     }
 
     /**
