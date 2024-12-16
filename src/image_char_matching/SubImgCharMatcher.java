@@ -58,4 +58,8 @@ public class SubImgCharMatcher {
     public void printChars() {
         this.brightnessMap.printChars();
     }
+
+    public boolean containsChar(char c) {
+        return this.brightnessMap.containsChar(c);
+    }
 }

@@ -1,11 +1,12 @@
 package ascii_art;
 
-import ascii_output.ConsoleAsciiOutput;
-import exceptions.InvalidCharsetSizeException;
 import image.Image;
 import image_char_matching.SubImgCharMatcher;
+import ascii_output.ConsoleAsciiOutput;
 
-import java.io.IOException;
+import exceptions.InvalidAddFormatException;
+import exceptions.InvalidCharsetSizeException;
+import exceptions.InvalidRemoveFormatException;
 
 public class Shell {
     // Default parameters
@@ -13,6 +14,8 @@ public class Shell {
     private static final char DEFAULT_FIRST_CHAR = '0';
     private static final char DEFAULT_LAST_CHAR = '9';
     private static final int MIN_CHARSET_SIZE = 2; // Min size for ascii art
+    private static final int MIN_WORDS_FOR_ADD_FORMAT = 2;
+    private static final int MIN_WORDS_FOR_REMOVE_FORMAT = 2;
 
     // Input Messages
     private static final String VIEW_CHARS = "chars";
@@ -63,15 +66,16 @@ public class Shell {
 
     private void runCommand(String command) {
         try {
-            switch (command) {
+            String commandType = command.split(" ")[0];
+            switch (commandType) {
                 case VIEW_CHARS:
                     this.charMatcher.printChars();
                     break;
                 case ADD_CHAR:
-                    // TODO: implement method
+                    this.addChars(command);
                     break;
                 case REMOVE_CHAR:
-                    // TODO: implement method
+                    this.removeChars(command);
                     break;
                 case CHANGE_RESOLUTION:
                     // TODO: implement method
@@ -89,8 +93,38 @@ public class Shell {
                     // TODO: Check if exception needed
                     System.out.println(INVALID_COMMAND_MESSAGE);
             }
-        } catch (InvalidCharsetSizeException e) {
+        } catch (InvalidCharsetSizeException | InvalidAddFormatException | InvalidRemoveFormatException e) {
             System.out.println(e.getMessage());
+        }
+    }
+
+    private void addChars(String command) throws InvalidAddFormatException {
+        if (command.split(" ").length < MIN_WORDS_FOR_ADD_FORMAT) {
+            throw new InvalidAddFormatException();
+        }
+
+        String formatToAdd = command.split(" ")[1];
+        this.addChar(formatToAdd.charAt(0));
+    }
+
+    private void addChar(char c) {
+        if (!this.charMatcher.containsChar(c)) {
+            this.charMatcher.addChar(c);
+        }
+    }
+
+    private void removeChars(String command) throws InvalidRemoveFormatException {
+        if (command.split(" ").length < MIN_WORDS_FOR_REMOVE_FORMAT) {
+            throw new InvalidRemoveFormatException();
+        }
+
+        String formatToRemove = command.split(" ")[1];
+        this.removeChar(formatToRemove.charAt(0));
+    }
+
+    private void removeChar(char c) {
+        if (this.charMatcher.containsChar(c)) {
+            this.charMatcher.removeChar(c);
         }
     }
 

@@ -178,4 +178,8 @@ public class CharBrightnessMap {
         }
         System.out.println();
     }
+
+    public boolean containsChar(char c) {
+        return this.rawBrightnessMap.containsKey((int) c);
+    }
 }
