@@ -7,6 +7,7 @@ import ascii_art.AsciiArtAlgorithm.RoundType;
 import java.io.IOException;
 
 public class Shell {
+
     // Default parameters
     private static final int DEFAULT_RESOLUTION = 2;
     private static final char DEFAULT_FIRST_CHAR = '0';
@@ -31,14 +32,30 @@ public class Shell {
             "incorrect format.";
     private static final String INVALID_ROUND_MESSAGE = "Did not change rounding method due to incorrect " +
             "format.";
+    private static final String INVALID_OUTPUT_METHOD_MESSAGE = "Did not change output method due to " +
+            "incorrect format.";
 
+    // expected strings as input following commands
+    private static final String HTML_OUTPUT = "html";
+    private static final String CONSOLE_OUTPUT = "console";
+
+
+    // an enum for desired output method.
+    public enum OutputMethod {
+        HTML, CONSOLE
+    }
+
+    // private fields
     private int resolution;
     private Image image;
     private char[] charset;
     private RoundType roundType;
+    private OutputMethod outputMethod;
+
 
     public Shell() {
         this.resolution = DEFAULT_RESOLUTION;
+        this.outputMethod = OutputMethod.CONSOLE;
         this.roundType = RoundType.ABS;
         // Init default chars set
         this.charset = new char[DEFAULT_LAST_CHAR - DEFAULT_FIRST_CHAR + 1];
@@ -87,6 +104,14 @@ public class Shell {
         int maximumRes = imgHeight*imgWidth;
         int minimumRes = Math.max(1, imgWidth/imgHeight);
         return inspectedResolution >= minimumRes && inspectedResolution <= maximumRes;
+    }
+
+    private void changeOutputMethod(String outputMethod) {
+        switch (outputMethod){
+            case HTML_OUTPUT -> this.outputMethod = OutputMethod.HTML;
+            case CONSOLE_OUTPUT -> this.outputMethod = OutputMethod.CONSOLE;
+            default -> System.err.println(INVALID_OUTPUT_METHOD_MESSAGE);
+        }
     }
 
     private void changeRoundType(String roundType) {

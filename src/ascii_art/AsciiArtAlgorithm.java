@@ -23,6 +23,7 @@ public class AsciiArtAlgorithm {
         UP, DOWN, ABS
     }
 
+
     // TODO: constructor doc
     public AsciiArtAlgorithm(Image image, char[] charset, int resolution, RoundType roundType) {
         this.image = image;
