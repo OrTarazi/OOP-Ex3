@@ -51,14 +51,28 @@ public class SubImgCharMatcher {
         this.brightnessMap.removeChar(c);
     }
 
+    /**
+     * Returns the number of characters currently in the ASCII character set.
+     *
+     * @return the size of the character set managed by this matcher.
+     */
     public int getCharsNumber() {
         return this.brightnessMap.getSize();
     }
 
+    /**
+     * Prints all the characters in the ASCII character set by order
+     */
     public void printChars() {
         this.brightnessMap.printChars();
     }
 
+    /**
+     * Checks if a specific character exists in the ASCII character set.
+     *
+     * @param c the character to check.
+     * @return true if the character is present in the set, false otherwise.
+     */
     public boolean containsChar(char c) {
         return this.brightnessMap.containsChar(c);
     }

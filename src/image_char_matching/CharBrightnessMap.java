@@ -164,10 +164,20 @@ public class CharBrightnessMap {
         }
     }
 
+    /**
+     * Returns the number of ASCII characters currently in the brightness map.
+     *
+     * @return the size of the map, representing the total number of characters in the set.
+     */
     public int getSize() {
         return this.rawBrightnessMap.size();
     }
 
+    /**
+     * Prints all the ASCII characters currently in the brightness map to the console.
+     * Characters are printed in a single line, separated by spaces, in the order they
+     * appear in the internal TreeMap.
+     */
     public void printChars() {
         int count = 0;
         for (int key : this.rawBrightnessMap.keySet()) {
@@ -179,6 +189,12 @@ public class CharBrightnessMap {
         System.out.println();
     }
 
+    /**
+     * Checks if a specific ASCII character is present in the brightness map.
+     *
+     * @param c the character to check.
+     * @return true if the character exists in the map, false otherwise.
+     */
     public boolean containsChar(char c) {
         return this.rawBrightnessMap.containsKey((int) c);
     }
