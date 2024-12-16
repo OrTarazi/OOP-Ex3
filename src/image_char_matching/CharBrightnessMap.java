@@ -16,10 +16,10 @@ public class CharBrightnessMap {
     // Stores raw brightness values
     private final TreeMap<Integer, Float> rawBrightnessMap;
     // Stores normalized brightness values
-    // TODO: init min and max initial values with constants in constructor
-    private float minBrightness = 1;
+
+    private float minBrightness = MAX_POSSIBLE_BRIGHTNESS;
     private final TreeMap<Integer, Float> normalizedBrightnessMap;
-    private float maxBrightness = 0;
+    private float maxBrightness = MIN_POSSIBLE_BRIGHTNESS;
 
     /**
      * constructor for the data-structure. initializes two TreeMap when an instance is created.
@@ -38,17 +38,19 @@ public class CharBrightnessMap {
         float brightness = CharBrightnessCalculator.calculateCharBrightness(c);
         this.rawBrightnessMap.put((int) c, brightness); // Always store raw brightness
 
-        // TODO: Optimize conditions or add comments
-        if (this.rawBrightnessMap.size() > 1 &&
-                (brightness > this.maxBrightness || brightness < this.minBrightness)) {
-            this.adjustMinAndMaxBrightness(brightness);
-            this.normalizedBrightnessMap.put((int) c, this.normalizeBrightness(brightness));
-            this.normalizeAllValues();
-        } else if (this.rawBrightnessMap.size() > 1) {
-            this.normalizedBrightnessMap.put((int) c, this.normalizeBrightness(brightness));
-        } else {
+
+        if (brightness > this.maxBrightness || brightness < this.minBrightness){
             this.adjustMinAndMaxBrightness(brightness);
         }
+        if (this.normalizedBrightnessMap.size()>1){
+            this.normalizedBrightnessMap.put((int) c, this.normalizeBrightness(brightness));
+            normalizeAllValues();
+        }
+        else {
+           this.normalizedBrightnessMap.put((int) c, brightness);
+        }
+        System.out.println("f");
+
     }
 
     // TODO: handle exceptions
@@ -65,11 +67,20 @@ public class CharBrightnessMap {
         Map.Entry<Integer, Float> closestAbove = null;
         Map.Entry<Integer, Float> closestBelow = null;
 
-        float smallestDifferenceAbove = Float.MAX_VALUE;
-        float smallestDifferenceBelow = Float.MIN_VALUE;
+        for (Map.Entry<Integer, Float> entry : this.normalizedBrightnessMap.entrySet()) {
+            if (entry.getValue() == MAX_POSSIBLE_BRIGHTNESS){
+                closestAbove = entry;
+            }
+            if (entry.getValue() == MIN_POSSIBLE_BRIGHTNESS){
+                closestBelow = entry;
+            }
+        }
+
+        float smallestDifferenceAbove = MAX_POSSIBLE_BRIGHTNESS;
+        float smallestDifferenceBelow = -MAX_POSSIBLE_BRIGHTNESS;
 
         for (Map.Entry<Integer, Float> entry : this.normalizedBrightnessMap.entrySet()) {
-            // TODO make sure rounding works well. currently its not.
+
 
             float difference = entry.getValue() - brightness;
             if (difference > 0) {
@@ -90,16 +101,11 @@ public class CharBrightnessMap {
             throw new IllegalStateException("No characters in brightness map.");
         }
 
-        switch (roundType) {
-            case ABS:
-                return (char) Math.max(Math.abs(closestAbove.getKey()), Math.abs(closestBelow.getKey()));
-            case DOWN:
-                return (char) (int) closestBelow.getKey();
-            case UP:
-                return (char) (int) closestAbove.getKey();
-            default:
-                return 0;
-        }
+        return switch (roundType) {
+            case ABS -> (char) Math.max(Math.abs(closestAbove.getKey()), Math.abs(closestBelow.getKey()));
+            case DOWN -> (char) (int) closestBelow.getKey();
+            case UP -> (char) (int) closestAbove.getKey();
+        };
     }
 
     /**
@@ -140,11 +146,10 @@ public class CharBrightnessMap {
      * it's not needed to be called when minimum/brightness haven't changed after adding an ascii char.
      */
     private void normalizeAllValues() {
-        this.normalizedBrightnessMap.clear();
 
         for (Map.Entry<Integer, Float> entry : this.rawBrightnessMap.entrySet()) {
             float normalized = this.normalizeBrightness(entry.getValue());
-            // TODO: check replacing value instead of clear and put
+
             this.normalizedBrightnessMap.put(entry.getKey(), normalized);
         }
     }
@@ -156,7 +161,7 @@ public class CharBrightnessMap {
      * outreaches the current minimum and maximum.
      *
      * @param addedBrightness the new brightness value in the map that changes the min/max values.
-     * @return
+     * @return normalized brightness
      */
     private float normalizeBrightness(float addedBrightness) {
         // TODO: Assumption, condition can br removed (check)
@@ -164,7 +169,6 @@ public class CharBrightnessMap {
         if (this.minBrightness == this.maxBrightness) {
             return addedBrightness;
         }
-
         return (addedBrightness - this.minBrightness) / (this.maxBrightness - this.minBrightness);
     }
 

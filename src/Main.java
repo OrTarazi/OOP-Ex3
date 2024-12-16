@@ -9,12 +9,13 @@ public class Main {
     public static void main(String[] args) {
         try {
             Image image = new Image("cat.jpeg");
-            char[] charset = new char[]{'0', '1', '3', '4', '6', '7'};
-//            char[] charset = new char[]{'0', '1', '3', '4', '6', '7', '`', '.', 'A', 'B', 'C', 'E', 'K',
-//                    'M', 'N', 'T', 'W', '!', '"', '=', '*', '&', '%', '$', '{', ';', '\'', ':', '+', '@'};
+//            char[] charset = new char[]{'0', '1', '3', '4', '6', '7'};
+            char[] charset = new char[]{'0', '1', '3', '4', '6', '7', '`', '.', 'A', 'B', 'C', 'E', 'K',
+                    'M', 'N', 'T', 'W', '!', '"', '=', '*', '&', '%', '$', '{', ';', '\'', ':', '+', '@',
+                    '^', 'a','v','b', 'r'};
 
             AsciiArtAlgorithm asciiArtAlgorithm = new AsciiArtAlgorithm(image, charset, DEFAULT_RESOLUTION,
-                    RoundType.ABS);
+                    RoundType.UP);
             char[][] asciiImage = asciiArtAlgorithm.run();
             ConsoleAsciiOutput consoleAsciiOutput = new ConsoleAsciiOutput();
             consoleAsciiOutput.out(asciiImage);
