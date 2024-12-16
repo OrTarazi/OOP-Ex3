@@ -49,7 +49,6 @@ public class CharBrightnessMap {
         else {
            this.normalizedBrightnessMap.put((int) c, brightness);
         }
-        System.out.println("f");
 
     }
 
