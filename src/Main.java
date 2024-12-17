@@ -23,23 +23,23 @@ public class Main {
 //        } catch (java.io.IOException e) {
 //            System.out.println(e.getMessage());
 //        }
-        try {
-            Image image = new Image("cat.jpeg");
-//            char[] charset = new char[]{'0', '1', '3', '4', '6', '7'};
-            char[] charset = new char[]{'0', '1', '3', '4', '6', '7', '`', '.', 'A', 'B', 'C', 'E', 'K',
-                    'M', 'N', 'T', 'W', '!', '"', '=', '*', '&', '%', '$', '{', ';', '\'', ':', '+', '@',
-                    '^', 'a','v','b', 'r'};
-
-            AsciiArtAlgorithm asciiArtAlgorithm = new AsciiArtAlgorithm(image, charset, DEFAULT_RESOLUTION,
-                    RoundType.UP);
-            char[][] asciiImage = asciiArtAlgorithm.run();
-            ConsoleAsciiOutput consoleAsciiOutput = new ConsoleAsciiOutput();
-            consoleAsciiOutput.out(asciiImage);
-            HtmlAsciiOutput htmlAsciiOutput =
-                    new HtmlAsciiOutput("cat out (1).html", "Courier New");
-            htmlAsciiOutput.out(asciiImage);
-        } catch (java.io.IOException e) {
-            System.out.println(e.getMessage());
-        }
+//        try {
+//            Image image = new Image("cat.jpeg");
+////            char[] charset = new char[]{'0', '1', '3', '4', '6', '7'};
+//            char[] charset = new char[]{'0', '1', '3', '4', '6', '7', '`', '.', 'A', 'B', 'C', 'E', 'K',
+//                    'M', 'N', 'T', 'W', '!', '"', '=', '*', '&', '%', '$', '{', ';', '\'', ':', '+', '@',
+//                    '^', 'a','v','b', 'r'};
+//
+//            AsciiArtAlgorithm asciiArtAlgorithm = new AsciiArtAlgorithm(image, charset, DEFAULT_RESOLUTION,
+//                    RoundType.UP);
+//            char[][] asciiImage = asciiArtAlgorithm.run();
+//            ConsoleAsciiOutput consoleAsciiOutput = new ConsoleAsciiOutput();
+//            consoleAsciiOutput.out(asciiImage);
+//            HtmlAsciiOutput htmlAsciiOutput =
+//                    new HtmlAsciiOutput("cat out (1).html", "Courier New");
+//            htmlAsciiOutput.out(asciiImage);
+//        } catch (java.io.IOException e) {
+//            System.out.println(e.getMessage());
+//        }
     }
 }

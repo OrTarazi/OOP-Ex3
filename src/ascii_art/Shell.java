@@ -2,11 +2,9 @@ package ascii_art;
 
 import ascii_output.ConsoleAsciiOutput;
 import image.Image;
-import ascii_art.AsciiArtAlgorithm.RoundType;
+import ascii_art.RoundType;
 import exceptions.*;
 import image_char_matching.SubImgCharMatcher;
-
-
 
 /**
  * The Shell class serves as the main control interface for handling and processing images into ASCII art.
@@ -17,7 +15,6 @@ import image_char_matching.SubImgCharMatcher;
  * and an `Image` object to perform image processing.</p>
  */
 public class Shell {
-
     // Default parameters
     private static final int DEFAULT_RESOLUTION = 2;
     // Constants for ascii
@@ -37,7 +34,7 @@ public class Shell {
     private static final int MIN_WORDS_FOR_ADD_FORMAT = 2;
     private static final int MIN_WORDS_FOR_REMOVE_FORMAT = 2;
 
-
+    private static final int SCALE_FACTOR = 2;
     // Input Messages
     private static final String VIEW_CHARS = "chars";
     private static final String ADD_CHAR = "add";
@@ -52,14 +49,11 @@ public class Shell {
     private static final String ENTER_COMMAND_MESSAGE = ">>> ";
     private static final String INVALID_COMMAND_MESSAGE = "Did not execute due to incorrect command.";
 
-
     // expected strings as input following commands
     private static final String HTML_OUTPUT = "html";
     private static final String CONSOLE_OUTPUT = "console";
     private static final String UPSCALE_BY_TWO = "up";
     private static final String DOWNSCALE_BY_TWO = "down";
-    private static final int SCALE_FACTOR = 2;
-
 
     // an enum for desired output method.
     public enum OutputMethod {
@@ -69,10 +63,8 @@ public class Shell {
     // private fields
     private int resolution;
     private Image image;
-    private char[] charset;
     private RoundType roundType;
     private OutputMethod outputMethod;
-
     private SubImgCharMatcher charMatcher;
 
 

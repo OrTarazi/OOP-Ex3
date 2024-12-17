@@ -2,7 +2,7 @@ package image_char_matching;
 
 import java.util.Map;
 import java.util.TreeMap;
-import ascii_art.AsciiArtAlgorithm.RoundType;
+import ascii_art.RoundType;
 
 /**
  * a data structure that wraps two instanes of TreeMap from java.Collections.

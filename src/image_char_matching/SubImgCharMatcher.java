@@ -1,5 +1,5 @@
 package image_char_matching;
-import ascii_art.AsciiArtAlgorithm.RoundType;
+import ascii_art.RoundType;
 /**
  * a facade for using the CharBrightnessMap and so simplifies handling removal and addition of ascii chars
  * to the set.
