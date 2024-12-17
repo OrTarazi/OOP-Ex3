@@ -25,9 +25,9 @@ public class AsciiArtAlgorithm {
 
 
     // TODO: constructor doc
-    public AsciiArtAlgorithm(Image image, char[] charset, int resolution, RoundType roundType) {
+    public AsciiArtAlgorithm(Image image, SubImgCharMatcher charMatcher, int resolution, RoundType roundType) {
         this.image = image;
-        this.charMatcher = new SubImgCharMatcher(charset,roundType);
+        this.charMatcher = charMatcher;
         this.resolution = resolution;
     }
 

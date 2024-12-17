@@ -33,7 +33,6 @@ public class Shell {
     private static final int RANGE_START_CHAR_INDEX = 0;
     private static final int RANGE_SEPARATOR_INDEX = 1;
     private static final int RANGE_END_CHAR_INDEX = 2;
-    private static final int DEFAULT_RESOLUTION = 2;
     private static final int MIN_CHARSET_SIZE = 2; // Min size for ascii art
     private static final int MIN_WORDS_FOR_ADD_FORMAT = 2;
     private static final int MIN_WORDS_FOR_REMOVE_FORMAT = 2;
@@ -75,7 +74,7 @@ public class Shell {
     private OutputMethod outputMethod;
 
     private SubImgCharMatcher charMatcher;
-    private int resolution;
+
 
     /**
      * Constructs a new `Shell` instance.
@@ -95,7 +94,7 @@ public class Shell {
         for (int charIndex = DEFAULT_FIRST_CHAR; charIndex <= DEFAULT_LAST_CHAR; charIndex++) {
             charset[charIndex - DEFAULT_FIRST_CHAR] = (char) charIndex;
         }
-        this.charMatcher = new SubImgCharMatcher(charset);
+        this.charMatcher = new SubImgCharMatcher(charset, this.roundType);
     }
 
     /**
@@ -376,9 +375,8 @@ public class Shell {
         }
 
         // TODO: Check if can we prevent repeated creation
-        AsciiArtAlgorithm asciiArt = new AsciiArtAlgorithm(
-                this.image, this.charset, this.resolution, this.roundType);
-        AsciiArtAlgorithm asciiArt = new AsciiArtAlgorithm(this.image, this.charMatcher, this.resolution);
+
+        AsciiArtAlgorithm asciiArt = new AsciiArtAlgorithm(this.image, this.charMatcher, this.resolution, roundType);
         char[][] asciiImage = asciiArt.run();
 
         // TODO: change to output outing
