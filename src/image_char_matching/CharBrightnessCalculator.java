@@ -3,7 +3,7 @@ package image_char_matching;
 /**
  * simply gets a boolean table and calculates the brightness level describing the character.
  *
- * @author ortar
+ * @author Or Tarazi, Agam Hershko
  */
 public class CharBrightnessCalculator {
     public static float calculateCharBrightness(char c) {

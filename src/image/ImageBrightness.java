@@ -2,6 +2,7 @@ package image;
 
 import java.awt.*;
 
+// TODO: Add documentation
 public class ImageBrightness {
     private static final float RED_FACTOR = 0.2126f;
     private static final float GREEN_FACTOR = 0.7152f;

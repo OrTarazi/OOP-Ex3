@@ -3,10 +3,12 @@ import ascii_art.RoundType;
 /**
  * a facade for using the CharBrightnessMap and so simplifies handling removal and addition of ascii chars
  * to the set.
+ *
+ * @author Or Tarazi, Agam Hershko
  */
 public class SubImgCharMatcher {
-    private RoundType roundType;
     private CharBrightnessMap brightnessMap;
+    private RoundType roundType;
 
     /**
      * constructor for the matcher
@@ -15,6 +17,7 @@ public class SubImgCharMatcher {
     public SubImgCharMatcher(char[] charset, RoundType roundType) {
         this.brightnessMap = new CharBrightnessMap();
         this.roundType = roundType;
+
         for (char c : charset) {
             this.addChar(c);
         }
@@ -31,7 +34,7 @@ public class SubImgCharMatcher {
      * the sub-image in the final ascii art.
      */
     public char getCharByImageBrightness(float brightness) {
-        return this.brightnessMap.getCharByNormalizedBrightness(brightness, roundType);
+        return this.brightnessMap.getCharByNormalizedBrightness(brightness, this.roundType);
     }
 
     /**

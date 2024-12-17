@@ -2,24 +2,25 @@ package image_char_matching;
 
 import java.util.Map;
 import java.util.TreeMap;
+
 import ascii_art.RoundType;
 
 /**
- * a data structure that wraps two instanes of TreeMap from java.Collections.
+ * a data structure that wraps two instances of TreeMap from java.Collections.
  * the CharBrightnessMap offers the functionality of a map, but also manages the normalization of the
- * values, which makes it more complex, yet effetive.
+ * values, which makes it more complex, yet effective.
  */
+// TODO: FIX DOCUMENTATION
 public class CharBrightnessMap {
-    private static final Float MAP_MISS_VALUE = -1.0f;
     private static final float MIN_POSSIBLE_BRIGHTNESS = 0;
     private static final float MAX_POSSIBLE_BRIGHTNESS = 1;
+
     // Stores raw brightness values
     private final TreeMap<Integer, Float> rawBrightnessMap;
     // Stores normalized brightness values
-
-    private float minBrightness = MAX_POSSIBLE_BRIGHTNESS;
     private final TreeMap<Integer, Float> normalizedBrightnessMap;
-    private float maxBrightness = MIN_POSSIBLE_BRIGHTNESS;
+    private float minBrightness;
+    private float maxBrightness;
 
     /**
      * constructor for the data-structure. initializes two TreeMap when an instance is created.
@@ -27,6 +28,9 @@ public class CharBrightnessMap {
     public CharBrightnessMap() {
         this.rawBrightnessMap = new TreeMap<>();
         this.normalizedBrightnessMap = new TreeMap<>();
+        // Init default values to make first conditions be true
+        this.minBrightness = MAX_POSSIBLE_BRIGHTNESS;
+        this.maxBrightness = MIN_POSSIBLE_BRIGHTNESS;
     }
 
     /**
@@ -38,22 +42,19 @@ public class CharBrightnessMap {
         float brightness = CharBrightnessCalculator.calculateCharBrightness(c);
         this.rawBrightnessMap.put((int) c, brightness); // Always store raw brightness
 
-
-        if (brightness > this.maxBrightness || brightness < this.minBrightness){
+        if (brightness > this.maxBrightness || brightness < this.minBrightness) {
             this.adjustMinAndMaxBrightness(brightness);
         }
-        if (this.normalizedBrightnessMap.size()>1){
+        if (this.normalizedBrightnessMap.size() > 1) {
             this.normalizedBrightnessMap.put((int) c, this.normalizeBrightness(brightness));
-            normalizeAllValues();
-        }
-        else {
-           this.normalizedBrightnessMap.put((int) c, brightness);
+            this.normalizeAllValues();
+        } else {
+            this.normalizedBrightnessMap.put((int) c, brightness);
         }
 
     }
 
-    // TODO: handle exceptions
-
+    // TODO: handle exceptions and check
     /**
      * searches for the key (Ascii char) with the minimal absolute difference between its value
      * (Brightness) and the given brightness
@@ -67,10 +68,10 @@ public class CharBrightnessMap {
         Map.Entry<Integer, Float> closestBelow = null;
 
         for (Map.Entry<Integer, Float> entry : this.normalizedBrightnessMap.entrySet()) {
-            if (entry.getValue() == MAX_POSSIBLE_BRIGHTNESS){
+            if (entry.getValue() == MAX_POSSIBLE_BRIGHTNESS) {
                 closestAbove = entry;
             }
-            if (entry.getValue() == MIN_POSSIBLE_BRIGHTNESS){
+            if (entry.getValue() == MIN_POSSIBLE_BRIGHTNESS) {
                 closestBelow = entry;
             }
         }
@@ -122,7 +123,6 @@ public class CharBrightnessMap {
                 this.normalizeAllValues();
             }
         }
-
     }
 
     /**
@@ -131,7 +131,6 @@ public class CharBrightnessMap {
      * before removal.
      */
     private void recalculateMinMaxBrightness() {
-
         this.minBrightness = MAX_POSSIBLE_BRIGHTNESS;
         this.maxBrightness = MIN_POSSIBLE_BRIGHTNESS;
 
@@ -145,10 +144,8 @@ public class CharBrightnessMap {
      * it's not needed to be called when minimum/brightness haven't changed after adding an ascii char.
      */
     private void normalizeAllValues() {
-
         for (Map.Entry<Integer, Float> entry : this.rawBrightnessMap.entrySet()) {
             float normalized = this.normalizeBrightness(entry.getValue());
-
             this.normalizedBrightnessMap.put(entry.getKey(), normalized);
         }
     }
@@ -157,17 +154,12 @@ public class CharBrightnessMap {
      * does linear stretch over the current set of ascii chars and their brightness values.
      * re-evaluates the normalizedMap values per key.
      * the method is called smartly, only when adding an entry to the map where the brightness value
-     * outreaches the current minimum and maximum.
+     * outreaches the current minimum and maximum (we can assume they are different
      *
      * @param addedBrightness the new brightness value in the map that changes the min/max values.
      * @return normalized brightness
      */
     private float normalizeBrightness(float addedBrightness) {
-        // TODO: Assumption, condition can br removed (check)
-        // Avoid division by zero when all values are identical
-        if (this.minBrightness == this.maxBrightness) {
-            return addedBrightness;
-        }
         return (addedBrightness - this.minBrightness) / (this.maxBrightness - this.minBrightness);
     }
 

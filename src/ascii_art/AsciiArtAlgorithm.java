@@ -25,8 +25,6 @@ public class AsciiArtAlgorithm {
         this.resolution = resolution;
     }
 
-    // cant change the signature
-
     /**
      * runs the algorithm from start to finish.
      *

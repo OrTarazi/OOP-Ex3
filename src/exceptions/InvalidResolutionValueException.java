@@ -1,9 +1,12 @@
 package exceptions;
 
+// TODO: Add documentation
 public class InvalidResolutionValueException extends Exception {
 
-    private static final String INVALID_RESOLUTION_VALUE_MESSAGE = "Did not change resolution due to exceeding " +
-            "boundaries.";
+    private static final String INVALID_RESOLUTION_VALUE_MESSAGE =
+            "Did not change resolution due to exceeding boundaries.";
 
-    public InvalidResolutionValueException() {super(INVALID_RESOLUTION_VALUE_MESSAGE);}
+    public InvalidResolutionValueException() {
+        super(INVALID_RESOLUTION_VALUE_MESSAGE);
+    }
 }

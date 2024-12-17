@@ -1,11 +1,9 @@
 package exceptions;
 
-/**
-//todo doc:
- */
+// TODO: Add documentation
 public class InvalidResolutionFormatException extends Exception {
-    private static final String INVALID_RESOLUTION_FORMAT_MESSAGE = "Did not change resolution due to " +
-            "incorrect format.";
+    private static final String INVALID_RESOLUTION_FORMAT_MESSAGE =
+            "Did not change resolution due to incorrect format.";
 
     /**
      * Constructs a new `InvalidAddFormatException` with a default error message.
