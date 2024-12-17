@@ -3,7 +3,7 @@ package ascii_art;
 import ascii_output.ConsoleAsciiOutput;
 import image.Image;
 import ascii_art.AsciiArtAlgorithm.RoundType;
-
+import exceptions.*;
 import java.io.IOException;
 
 public class Shell {
@@ -26,14 +26,7 @@ public class Shell {
     private static final String ENTER_COMMAND_MESSAGE = ">>> ";
     private static final String INVALID_COMMAND_MESSAGE = "Did not execute due to incorrect command.";
     private static final String INVALID_CHARSET_SIZE_MESSAGE = "Did not execute. Charset is too small.";
-    private static final String INVALID_RESOLUTION_MESSAGE = "Did not change resolution due to exceeding " +
-            "boundaries.";
-    private static final String INVALID_RESOLUTION_FORMAT_MESSAGE = "Did not change resolution due to " +
-            "incorrect format.";
-    private static final String INVALID_ROUND_MESSAGE = "Did not change rounding method due to incorrect " +
-            "format.";
-    private static final String INVALID_OUTPUT_METHOD_MESSAGE = "Did not change output method due to " +
-            "incorrect format.";
+
 
     // expected strings as input following commands
     private static final String HTML_OUTPUT = "html";
