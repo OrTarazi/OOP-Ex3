@@ -4,7 +4,7 @@ import ascii_output.ConsoleAsciiOutput;
 import image.Image;
 import ascii_art.AsciiArtAlgorithm.RoundType;
 import exceptions.*;
-import java.io.IOException;
+
 
 public class Shell {
 
@@ -31,6 +31,9 @@ public class Shell {
     // expected strings as input following commands
     private static final String HTML_OUTPUT = "html";
     private static final String CONSOLE_OUTPUT = "console";
+    private static final String UPSCALE_BY_TWO = "up";
+    private static final String DOWNSCALE_BY_TWO = "down";
+    private static final int SCALE_FACTOR = 2;
 
 
     // an enum for desired output method.
@@ -77,21 +80,35 @@ public class Shell {
         return KeyboardInput.readLine();
     }
 
-    private void changeResolution(int newResolution) {
+    /**
+     * changes the resolution by multiplying the current resolution by 2 or dividing it by 2.
+     * @param direction "up" for upscale by 2, "down" for downscale by 2.
+     * @throws InvalidResolutionValueException if the new resolution after the change exceeds the limits
+     * defined in the exercise.
+     * @throws InvalidResolutionFormatException if the user inserted any string other than "up" or "down".
+     */
+    private void changeResolution(String direction) throws InvalidResolutionValueException, InvalidResolutionFormatException {
+        int newResolution = switch (direction) {
+            case UPSCALE_BY_TWO -> this.resolution * SCALE_FACTOR;
+            case DOWNSCALE_BY_TWO -> this.resolution / SCALE_FACTOR;
+            default -> throw new InvalidResolutionFormatException();
+        };
         if (isResolutionLegal(newResolution)) {
             this.resolution = newResolution;
         }
         else {
-            System.err.println(INVALID_RESOLUTION_MESSAGE);
+            throw new InvalidResolutionValueException();
         }
     }
 
+
+
     /**
      * checks if the desired resolution stands within the resolution boundaries defined in the exercise.
-     * @param inspectedResolution
-     * @return
+     * @param inspectedResolution the new resolution being inspected if legal.
+     * @return true if legal, false if not
      */
-    private boolean isResolutionLegal(int inspectedResolution) {
+    private boolean isResolutionLegal(int inspectedResolution)  {
         int imgWidth = this.image.getWidth();
         int imgHeight = this.image.getHeight();
         int maximumRes = imgHeight*imgWidth;
@@ -99,16 +116,30 @@ public class Shell {
         return inspectedResolution >= minimumRes && inspectedResolution <= maximumRes;
     }
 
-    private void changeOutputMethod(String outputMethod) {
+    /**
+     * changes the output in which the program will print the final result of the ascii-art.
+     * @param outputMethod either "html" or "console" (console is default)
+     * @throws InvalidOutputFormatException if the user inserted any string other than "html" or "console".
+     */
+    private void changeOutputMethod(String outputMethod) throws InvalidOutputFormatException {
         switch (outputMethod){
             case HTML_OUTPUT -> this.outputMethod = OutputMethod.HTML;
             case CONSOLE_OUTPUT -> this.outputMethod = OutputMethod.CONSOLE;
-            default -> System.err.println(INVALID_OUTPUT_METHOD_MESSAGE);
+            default -> throw new InvalidOutputFormatException();
         }
     }
 
-    private void changeRoundType(String roundType) {
+    /**
+     * changes the way the SubImageCharMatcher will match the closest char to a given brightness-
+     * 1) absolute "abs" - will return the char in the charset closest in absolute distance.
+     * 2) up "up" - will return the char in the charset closest from the top.
+     * 3) down "down" - will return the char in the charset closest from bottom.
+     * @param roundType "up" for up-rounding, "down" for down-rounding, "abs" for rounding in absolute distance.
+     * @throws InvalidRoundFormatException if user inserted any other string rather than "up", "down" or "abs".
+     */
+    private void changeRoundType(String roundType) throws InvalidRoundFormatException{
         switch (roundType) {
+            // TODO: make strings constants!
             case "up":
                 this.roundType = RoundType.UP;
             case "down":
@@ -116,8 +147,7 @@ public class Shell {
             case "abs":
                 this.roundType = RoundType.ABS;
             default:
-                System.err.println(INVALID_ROUND_MESSAGE);
-                break;
+                throw new InvalidRoundFormatException();
         }
     }
 
