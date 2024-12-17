@@ -1,10 +1,13 @@
 package ascii_art;
 
+import ascii_output.AsciiOutput;
 import ascii_output.ConsoleAsciiOutput;
+import ascii_output.HtmlAsciiOutput;
 import image.Image;
 import exceptions.*;
 import image_char_matching.SubImgCharMatcher;
 
+// TODO: update documentation
 /**
  * The Shell class serves as the main control interface for handling and processing images into ASCII art.
  * It provides commands to add, remove characters, change settings like resolution, and convert images to
@@ -26,9 +29,15 @@ public class Shell {
     // Constants for algorithm
     private static final int DEFAULT_RESOLUTION = 2;
     private static final int RESOLUTION_SCALE_FACTOR = 2;
+    private static final String HTML_OUTPUT_PATH = "html.out";
+    private static final String HTML_FONT = "New Courier";
+
     private static final String WORDS_SEPARATOR = " ";
-    private static final int MIN_WORDS_FOR_OPERAND_COMMAND = 2; // For add, remove, resolution, round, output
     private static final int MIN_CHARSET_SIZE = 2; // Min size for ascii art
+    private static final int MIN_WORDS_FOR_OPERAND_COMMAND = 2; // For add, remove, resolution, round, output
+    private static final int COMMAND_INDEX = 0;
+    private static final int OPERAND_INDEX = 1;
+    private static final int IMAGE_PATH_ARGS_INDEX = 0;
 
     private static final char RANGE_SEPARATOR = '-';
     private static final int RANGE_START_CHAR_INDEX = 0;
@@ -51,6 +60,9 @@ public class Shell {
     private static final String CONSOLE_OUTPUT = "console";
     private static final String RESOLUTION_UPSCALE = "up";
     private static final String RESOLUTION_DOWNSCALE = "down";
+    private static final String UP_ROUND_TYPE = "up";
+    private static final String DOWN_ROUND_TYPE = "down";
+    private static final String ABS_ROUND_TYPE = "abs";
     private static final String INVALID_COMMAND_MESSAGE = "Did not execute due to incorrect command.";
 
     // private fields
@@ -59,6 +71,7 @@ public class Shell {
     private SubImgCharMatcher charMatcher;
     private RoundType roundType;
     private OutputMethod outputMethod;
+    private AsciiOutput asciiOutput;
 
     /**
      * Constructs a new `Shell` instance.
@@ -71,7 +84,8 @@ public class Shell {
      */
     public Shell() {
         this.resolution = DEFAULT_RESOLUTION;
-        this.outputMethod = OutputMethod.CONSOLE;
+        this.outputMethod = OutputMethod.CONSOLE; // Default output method
+        this.asciiOutput = new ConsoleAsciiOutput();
         this.roundType = RoundType.ABS;
 
         // Init default chars set
@@ -120,7 +134,7 @@ public class Shell {
      */
     private void runCommand(String command) {
         try {
-            String commandType = command.split(WORDS_SEPARATOR)[0];
+            String commandType = command.split(WORDS_SEPARATOR)[COMMAND_INDEX];
             switch (commandType) {
                 case VIEW_CHARS:
                     this.charMatcher.printChars();
@@ -132,24 +146,29 @@ public class Shell {
                     this.removeChars(command);
                     break;
                 case CHANGE_RESOLUTION:
-                    // TODO: implement method
+                    this.changeResolution(command);
                     break;
                 case CHANGE_OUTPUT:
-                    // TODO: implement method
+                    this.changeOutputMethod(command);
                     break;
                 case CHANGE_ROUND:
-                    // TODO: implement method and change relevant parts in code
+                    this.changeRoundType(command);
                     break;
                 case ASCII_ART:
                     this.runAsciiArt();
                     break;
                 default:
-                    // TODO: Check if exception needed
                     System.out.println(INVALID_COMMAND_MESSAGE);
             }
-        } catch (InvalidCharsetSizeException | InvalidAddFormatException | InvalidRemoveFormatException e) {
+        } catch (InvalidCharsetSizeException | InvalidAddFormatException | InvalidRemoveFormatException |
+                 InvalidOutputFormatException | InvalidRoundFormatException |
+                 InvalidResolutionFormatException | InvalidResolutionValueException e) {
             System.out.println(e.getMessage());
         }
+    }
+
+    private boolean isWordsNumberInvalid(String command) {
+        return command.split(WORDS_SEPARATOR).length < MIN_WORDS_FOR_OPERAND_COMMAND;
     }
 
     /**
@@ -162,7 +181,7 @@ public class Shell {
      * @return true if the string matches the "X-Y" format where X and Y are legal characters, false otherwise.
      */
     private boolean isRangeFormat(String format) {
-        return format.length() == 3 &&
+        return format.length() == (RANGE_END_CHAR_INDEX + 1) &&
                 this.isCharLegal(format.charAt(RANGE_START_CHAR_INDEX)) &&
                 format.charAt(RANGE_SEPARATOR_INDEX) == RANGE_SEPARATOR &&
                 this.isCharLegal(format.charAt(RANGE_END_CHAR_INDEX));
@@ -215,11 +234,11 @@ public class Shell {
      * @throws InvalidAddFormatException if the format of the command is invalid.
      */
     private void addChars(String command) throws InvalidAddFormatException {
-        if (command.split(WORDS_SEPARATOR).length < MIN_WORDS_FOR_OPERAND_COMMAND) {
+        if (this.isWordsNumberInvalid(command)) {
             throw new InvalidAddFormatException();
         }
 
-        String formatToAdd = command.split(WORDS_SEPARATOR)[1];
+        String formatToAdd = command.split(WORDS_SEPARATOR)[OPERAND_INDEX];
         if (this.isRangeFormat(formatToAdd)) {
             this.applyRangeOperation(formatToAdd, true);
         } else if (formatToAdd.equals(ALL_OPERAND)) {
@@ -228,8 +247,8 @@ public class Shell {
             }
         } else if (formatToAdd.equals(SPACE_OPERAND)) {
             this.addChar(SPACE_CHARACTER);
-        } else if (formatToAdd.length() == 1 && isCharLegal(formatToAdd.charAt(0))) { // Format is valid char
-            this.addChar(formatToAdd.charAt(0));
+        } else if (formatToAdd.length() == 1 && isCharLegal(formatToAdd.charAt(COMMAND_INDEX))) {
+            this.addChar(formatToAdd.charAt(COMMAND_INDEX)); // Add if format is valid char
         } else {
             throw new InvalidAddFormatException();
         }
@@ -249,11 +268,11 @@ public class Shell {
      * @throws InvalidRemoveFormatException if the format of the command is invalid.
      */
     private void removeChars(String command) throws InvalidRemoveFormatException {
-        if (command.split(WORDS_SEPARATOR).length < MIN_WORDS_FOR_OPERAND_COMMAND) {
+        if (this.isWordsNumberInvalid(command)) {
             throw new InvalidRemoveFormatException();
         }
 
-        String formatToRemove = command.split(WORDS_SEPARATOR)[1];
+        String formatToRemove = command.split(WORDS_SEPARATOR)[OPERAND_INDEX];
         if (this.isRangeFormat(formatToRemove)) {
             this.applyRangeOperation(formatToRemove, false);
         } else if (formatToRemove.equals(ALL_OPERAND)) {
@@ -262,8 +281,8 @@ public class Shell {
             }
         } else if (formatToRemove.equals(SPACE_OPERAND)) {
             this.removeChar(SPACE_CHARACTER);
-        } else if (formatToRemove.length() == 1 && isCharLegal(formatToRemove.charAt(0))) {
-            this.removeChar(formatToRemove.charAt(0));
+        } else if (formatToRemove.length() == 1 && isCharLegal(formatToRemove.charAt(COMMAND_INDEX))) {
+            this.removeChar(formatToRemove.charAt(COMMAND_INDEX));  // Remove if format is valid char
         } else {
             throw new InvalidRemoveFormatException();
         }
@@ -275,32 +294,32 @@ public class Shell {
         }
     }
 
-    // TODO: Integrate func
-
     /**
      * changes the resolution by multiplying the current resolution by 2 or dividing it by 2.
      *
-     * @param direction "up" for upscale by 2, "down" for downscale by 2.
+     * @param command "up" for upscale by 2, "down" for downscale by 2.
      * @throws InvalidResolutionValueException  if the new resolution after the change exceeds the limits
      *                                          defined in the exercise.
      * @throws InvalidResolutionFormatException if the user inserted any string other than "up" or "down".
      */
-    private void changeResolution(String direction)
+    private void changeResolution(String command)
             throws InvalidResolutionValueException, InvalidResolutionFormatException {
-        int newResolution = switch (direction) {
+        if (this.isWordsNumberInvalid(command)) {
+            throw new InvalidResolutionValueException();
+        }
+
+        String formatToRemove = command.split(WORDS_SEPARATOR)[OPERAND_INDEX];
+        int newResolution = switch (formatToRemove) {
             case RESOLUTION_UPSCALE -> this.resolution * RESOLUTION_SCALE_FACTOR;
             case RESOLUTION_DOWNSCALE -> this.resolution / RESOLUTION_SCALE_FACTOR;
             default -> throw new InvalidResolutionFormatException();
         };
-        if (isResolutionLegal(newResolution)) {
+        if (this.isResolutionLegal(newResolution)) {
             this.resolution = newResolution;
         } else {
             throw new InvalidResolutionValueException();
         }
     }
-
-
-    // TODO: Integrate func
 
     /**
      * checks if the desired resolution stands within the resolution boundaries defined in the exercise.
@@ -309,30 +328,33 @@ public class Shell {
      * @return true if legal, false if not
      */
     private boolean isResolutionLegal(int inspectedResolution) {
-        int imgWidth = this.image.getWidth();
-        int imgHeight = this.image.getHeight();
-        int maximumRes = imgHeight * imgWidth;
-        int minimumRes = Math.max(1, imgWidth / imgHeight);
-        return inspectedResolution >= minimumRes && inspectedResolution <= maximumRes;
+        int maxResolution = this.image.getWidth();
+        int minResolution = Math.max(1, this.image.getWidth() / this.image.getHeight());
+        return inspectedResolution >= minResolution && inspectedResolution <= maxResolution;
     }
-
-    // TODO: Integrate func
 
     /**
      * changes the output in which the program will print the final result of the ascii-art.
      *
-     * @param outputMethod either "html" or "console" (console is default)
+     * @param command either "html" or "console" (console is default)
      * @throws InvalidOutputFormatException if the user inserted any string other than "html" or "console".
      */
-    private void changeOutputMethod(String outputMethod) throws InvalidOutputFormatException {
-        switch (outputMethod) {
-            case HTML_OUTPUT -> this.outputMethod = OutputMethod.HTML;
-            case CONSOLE_OUTPUT -> this.outputMethod = OutputMethod.CONSOLE;
-            default -> throw new InvalidOutputFormatException();
+    private void changeOutputMethod(String command) throws InvalidOutputFormatException {
+        if (this.isWordsNumberInvalid(command)) {
+            throw new InvalidOutputFormatException();
+        }
+
+        String formatToRemove = command.split(WORDS_SEPARATOR)[OPERAND_INDEX];
+        if (formatToRemove.equals(CONSOLE_OUTPUT)) {
+            this.outputMethod = OutputMethod.CONSOLE;
+            this.asciiOutput = new ConsoleAsciiOutput();
+        } else if (formatToRemove.equals(HTML_OUTPUT)) {
+            this.outputMethod = OutputMethod.HTML;
+            this.asciiOutput = new HtmlAsciiOutput(HTML_OUTPUT_PATH, HTML_FONT);
+        } else {
+            throw new InvalidOutputFormatException();
         }
     }
-
-    // TODO: Integrate func
 
     /**
      * changes the way the SubImageCharMatcher will match the closest char to a given brightness-
@@ -340,17 +362,21 @@ public class Shell {
      * 2) up "up" - will return the char in the charset closest from the top.
      * 3) down "down" - will return the char in the charset closest from bottom.
      *
-     * @param roundType "up" for up-rounding, "down" for down-rounding, "abs" for rounding in absolute distance.
+     * @param command "up" for up-rounding, "down" for down-rounding, "abs" for rounding in absolute distance.
      * @throws InvalidRoundFormatException if user inserted any other string rather than "up", "down" or "abs".
      */
-    private void changeRoundType(String roundType) throws InvalidRoundFormatException {
-        switch (roundType) {
-            // TODO: make strings constants!
-            case "up":
+    private void changeRoundType(String command) throws InvalidRoundFormatException {
+        if (this.isWordsNumberInvalid(command)) {
+            throw new InvalidRoundFormatException();
+        }
+
+        String formatToRemove = command.split(WORDS_SEPARATOR)[OPERAND_INDEX];
+        switch (formatToRemove) {
+            case UP_ROUND_TYPE:
                 this.roundType = RoundType.UP;
-            case "down":
+            case DOWN_ROUND_TYPE:
                 this.roundType = RoundType.DOWN;
-            case "abs":
+            case ABS_ROUND_TYPE:
                 this.roundType = RoundType.ABS;
             default:
                 throw new InvalidRoundFormatException();
@@ -370,12 +396,10 @@ public class Shell {
 
         // TODO: Check if can we prevent repeated creation
         AsciiArtAlgorithm asciiArt =
-                new AsciiArtAlgorithm(this.image, this.charMatcher, this.resolution, roundType);
+                new AsciiArtAlgorithm(this.image, this.charMatcher, this.resolution);
         char[][] asciiImage = asciiArt.run();
 
-        // TODO: change to output outing
-        ConsoleAsciiOutput consoleAsciiOutput = new ConsoleAsciiOutput();
-        consoleAsciiOutput.out(asciiImage);
+        this.asciiOutput.out(asciiImage);
     }
 
     /**
@@ -388,7 +412,7 @@ public class Shell {
      */
     public static void main(String[] args) {
         Shell shell = new Shell();
-        String imageName = "cat.jpeg"; // Assume valid input: path file
+        String imageName = args[IMAGE_PATH_ARGS_INDEX]; // Assume valid input: path file
         shell.run(imageName);
     }
 }
