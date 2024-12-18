@@ -30,7 +30,7 @@ public class Shell {
     private static final int DEFAULT_RESOLUTION = 2;
     private static final int RESOLUTION_SCALE_FACTOR = 2;
     private static final String HTML_OUTPUT_PATH = "out.html";
-    private static final String HTML_FONT = "New Courier";
+    private static final String HTML_FONT = "Courier New";
 
     private static final String WORDS_SEPARATOR = " ";
     private static final int MIN_CHARSET_SIZE = 2; // Min size for ascii art
@@ -47,7 +47,7 @@ public class Shell {
     // Input Messages
     private static final String ENTER_COMMAND_MESSAGE = ">>> ";
     private static final String RESOLUTION_SET_MESSAGE = "Resolution set to ";
-    private static final String EXIT_COMMAND_MESSAGE = "EXIT";
+    private static final String EXIT_COMMAND_MESSAGE = "exit";
     private static final String VIEW_CHARS = "chars";
     private static final String ADD_CHAR = "add";
     private static final String REMOVE_CHAR = "remove";

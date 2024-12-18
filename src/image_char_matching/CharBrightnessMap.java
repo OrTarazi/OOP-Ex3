@@ -54,46 +54,80 @@ public class CharBrightnessMap {
 
     }
 
+    /**
+     * Finds the ASCII character that best matches the given normalized brightness value.
+     * This method searches the brightness map for the closest brightness values above
+     * and below the provided brightness. It then selects the best match based on the specified rounding type.
+     *
+     * @param brightness the normalized brightness value (between 0 and 1) to match.
+     * @param roundType  the rounding strategy to use when selecting the closest character:
+     *                   - ABS: Select the character with the smallest absolute difference.
+     *                   - UP: Select the closest character with brightness above or equal to given value.
+     *                   - DOWN: Select the closest character with brightness below or equal to given value.
+     * @return the ASCII character that best matches the brightness value based on the rounding type.
+     */
     public char getCharByNormalizedBrightness(float brightness, RoundType roundType) {
         Map.Entry<Integer, Float> closestAbove = null;
         Map.Entry<Integer, Float> closestBelow = null;
 
+        // Initialize with Float.MAX_VALUE to ensure any valid difference is smaller
+        float smallestDifferenceAbove = Float.MAX_VALUE;
+        float smallestDifferenceBelow = Float.MAX_VALUE;
+
+        // Single loop to find both the closestAbove and closestBelow entries
         for (Map.Entry<Integer, Float> entry : this.normalizedBrightnessMap.entrySet()) {
-            if (entry.getValue() == MAX_POSSIBLE_BRIGHTNESS){
+            float difference = entry.getValue() - brightness;
+            if (difference == 0) { // Exact match: Return immediately
+                return (char) (int) entry.getKey();
+            } else if (difference > 0 && difference < smallestDifferenceAbove) { // Check for closest above
+                smallestDifferenceAbove = difference;
                 closestAbove = entry;
-            }
-            if (entry.getValue() == MIN_POSSIBLE_BRIGHTNESS){
+            } else if (difference < 0 && -difference < smallestDifferenceBelow) { // Check for closest below
+                smallestDifferenceBelow = -difference;
                 closestBelow = entry;
             }
         }
 
-        float smallestDifferenceAbove = MAX_POSSIBLE_BRIGHTNESS;
-        float smallestDifferenceBelow = -MAX_POSSIBLE_BRIGHTNESS;
 
-        for (Map.Entry<Integer, Float> entry : this.normalizedBrightnessMap.entrySet()) {
-            float difference = entry.getValue() - brightness;
-            if (difference > 0) {
-                if (difference < smallestDifferenceAbove) {
-                    smallestDifferenceAbove = difference;
-                    closestAbove = entry;
-                }
-            }
-            if (difference < 0) {
-                if (difference > smallestDifferenceBelow) {
-                    smallestDifferenceBelow = difference;
-                    closestBelow = entry;
-                }
-            }
-        }
+        return getAbsRoundedChar(closestAbove, closestBelow, brightness, roundType);
+    }
 
-        if (closestAbove == null || closestBelow == null) {
-            throw new IllegalStateException("No characters in brightness map.");
-        }
-
+    /**
+     * Selects the ASCII character based on the closest brightness values and the specified rounding strategy.
+     *
+     * @param closestAbove the closest entry with brightness above or equal to the target brightness,
+     *                     or null if none.
+     * @param closestBelow the closest entry with brightness below or equal to the target brightness,
+     *                     or null if none.
+     * @param brightness   the target normalized brightness value (between 0 and 1).
+     * @param roundType    the rounding strategy to use:
+     *                     - ABS: Select the character with the smallest absolute difference.
+     *                     - UP: Select the closest character with brightness above or equal to brightness.
+     *                     - DOWN: Select the closest character with brightness below or equal to brightness.
+     * @return the ASCII character that matches the target brightness based on the rounding strategy.
+     */
+    private char getAbsRoundedChar(Map.Entry<Integer, Float> closestAbove,
+                                   Map.Entry<Integer, Float> closestBelow,
+                                   float brightness, RoundType roundType) {
         return switch (roundType) {
-            case ABS -> (char) Math.max(Math.abs(closestAbove.getKey()), Math.abs(closestBelow.getKey()));
-            case DOWN -> (char) (int) closestBelow.getKey();
-            case UP -> (char) (int) closestAbove.getKey();
+            case ABS -> {
+                if (closestAbove != null && closestBelow != null) {
+                    if (Math.abs(closestAbove.getValue() - brightness) <
+                            Math.abs(closestBelow.getValue() - brightness)) {
+                        yield (char) (int) closestAbove.getKey();
+                    } else {
+                        yield (char) (int) closestBelow.getKey();
+                    }
+                } else if (closestAbove != null) {
+                    yield (char) (int) closestAbove.getKey();
+                } else {
+                    yield (char) (int) closestBelow.getKey();
+                }
+            }
+            case DOWN -> closestBelow != null ?
+                    (char) (int) closestBelow.getKey() : (char) (int) closestAbove.getKey();
+            case UP -> closestAbove != null ?
+                    (char) (int) closestAbove.getKey() : (char) (int) closestBelow.getKey();
         };
     }
 
