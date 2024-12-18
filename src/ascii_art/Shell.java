@@ -73,6 +73,9 @@ public class Shell {
     private RoundType roundType;
     private OutputMethod outputMethod;
     private AsciiOutput asciiOutput;
+    private AsciiArtManager historyManager;
+    private AsciiArtAlgorithm algorithm;
+
 
     /**
      * Constructs a new `Shell` instance.
@@ -95,6 +98,8 @@ public class Shell {
             charset[charIndex - DEFAULT_FIRST_CHAR] = (char) charIndex;
         }
         this.charMatcher = new SubImgCharMatcher(charset, this.roundType);
+        this.historyManager = new AsciiArtManager(charMatcher, null);
+
     }
 
     /**
@@ -106,7 +111,7 @@ public class Shell {
     public void run(String imageName) {
         try {
             this.image = new Image(imageName);
-
+            this.algorithm = new AsciiArtAlgorithm(this.image, this.historyManager, this.charMatcher, this.resolution);
             String command = this.getCommand();
             while (!command.equals(EXIT_COMMAND_MESSAGE)) {
                 this.runCommand(command);
@@ -320,6 +325,8 @@ public class Shell {
         } else {
             throw new InvalidResolutionValueException();
         }
+        historyManager.setLastStateValidity(false);
+        this.algorithm = new AsciiArtAlgorithm(this.image, this.historyManager, this.charMatcher, this.resolution);
 
         System.out.println(RESOLUTION_SET_MESSAGE + this.resolution);
     }
@@ -389,6 +396,7 @@ public class Shell {
         }
 
         this.charMatcher.setRoundType(this.roundType);
+        this.algorithm = new AsciiArtAlgorithm(this.image, this.historyManager, this.charMatcher, this.resolution);
     }
 
 
@@ -403,9 +411,8 @@ public class Shell {
         }
 
         // TODO: Check if can we prevent repeated creation
-        AsciiArtAlgorithm asciiArt =
-                new AsciiArtAlgorithm(this.image, this.charMatcher, this.resolution);
-        char[][] asciiImage = asciiArt.run();
+
+        char[][] asciiImage = this.algorithm.run();
 
         this.asciiOutput.out(asciiImage);
     }

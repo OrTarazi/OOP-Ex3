@@ -17,6 +17,9 @@ public class AsciiArtAlgorithm {
     private Image image;
     private SubImgCharMatcher charMatcher;
     private int resolution;
+    private AsciiArtManager historyManager;
+    private Image paddedImage;
+    private Image[][] subImages;
 
     /**
      * Constructs a new `AsciiArtAlgorithm` instance.
@@ -29,10 +32,14 @@ public class AsciiArtAlgorithm {
      * @param resolution  the resolution of the ASCII art, representing the number of image pixels
      *                    mapped to a single ASCII character in both dimensions.
      */
-    public AsciiArtAlgorithm(Image image, SubImgCharMatcher charMatcher, int resolution) {
+    public AsciiArtAlgorithm(Image image, AsciiArtManager historyManager, SubImgCharMatcher charMatcher, int resolution) {
         this.image = image;
         this.charMatcher = charMatcher;
         this.resolution = resolution;
+        this.historyManager = historyManager;
+        this.paddedImage = ImagePadding.padImage(this.image);
+        this.subImages = ImageDivision.divideToImages(paddedImage, this.resolution);
+
     }
 
     /**
@@ -41,16 +48,30 @@ public class AsciiArtAlgorithm {
      * @return a char table of the ascii art
      */
     public char[][] run() {
-        Image paddedImage = ImagePadding.padImage(this.image);
-        Image[][] subImages = ImageDivision.divideToImages(paddedImage, this.resolution);
-        char[][] asciiImg = new char[subImages.length][subImages[0].length];
 
-        for (int row = 0; row < subImages.length; row++) {
-            for (int col = 0; col < subImages[row].length; col++) {
-                float brightness = ImageBrightness.calculateImageBrightness(subImages[row][col]);
-                asciiImg[row][col] = this.charMatcher.getCharByImageBrightness(brightness);
+        char[][] asciiImg = new char[subImages.length][subImages[0].length];
+        // if isLastStateValid:
+        if (historyManager.isLastStateValid() && historyManager.lastState.getBrightnessMap() != null) {
+            for (int row = 0; row < subImages.length; row++) {
+                for (int col = 0; col < subImages[row].length; col++) {
+                    float brightness = historyManager.lastState.getBrightnessMap()[row][col];
+                    asciiImg[row][col] = this.charMatcher.getCharByImageBrightness(brightness);
+                }
             }
+        // if !isLastStateValid:
+        } else {
+            float [][] newBrightnessMap = new float[subImages.length][subImages[0].length];
+            for (int row = 0; row < subImages.length; row++) {
+                for (int col = 0; col < subImages[row].length; col++) {
+                    float brightness = ImageBrightness.calculateImageBrightness(subImages[row][col]);
+                    asciiImg[row][col] = this.charMatcher.getCharByImageBrightness(brightness);
+                    newBrightnessMap[row][col] = brightness;
+                }
+            }
+            this.historyManager.saveState(charMatcher, newBrightnessMap);
+            this.historyManager.setLastStateValidity(true);
         }
+
 
         return asciiImg;
     }
