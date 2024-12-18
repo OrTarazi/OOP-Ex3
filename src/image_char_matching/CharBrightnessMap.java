@@ -54,71 +54,47 @@ public class CharBrightnessMap {
 
     }
 
-    /**
-     * Searches for the key (ASCII char) with the minimal absolute difference between its normalized brightness
-     * and the given brightness.
-     *
-     * @param brightness calculated brightness of a sub-image.
-     * @param roundType  the rounding method to determine how to select the closest character ('ABS', 'DOWN', 'UP').
-     * @return the best matching ASCII char for the given brightness value.
-     */
     public char getCharByNormalizedBrightness(float brightness, RoundType roundType) {
-        Map.Entry<Integer, Float>[] closestMatches = this.findClosestMatches(brightness);
-        Map.Entry<Integer, Float> closestAbove = closestMatches[0];
-        Map.Entry<Integer, Float> closestBelow = closestMatches[1];
-
-        // Handle rounding based on the specified type
-        return switch (roundType) {
-            case ABS -> this.findClosestMatchBasedOnAbs(closestAbove, closestBelow, brightness);
-            case DOWN -> closestBelow != null ? (char) (int) closestBelow.getKey() :
-                    (char) (int) closestAbove.getKey(); // Round down to the closest character below
-            case UP -> closestAbove != null ? (char) (int) closestAbove.getKey() :
-                    (char) (int) closestBelow.getKey();   // Round up to the closest character above
-        };
-    }
-
-    /**
-     * Helper method to find the closest matches above and below the target brightness.
-     * This method returns an array containing the closest matches above and below.
-     */
-    private Map.Entry<Integer, Float>[] findClosestMatches(float brightness) {
         Map.Entry<Integer, Float> closestAbove = null;
         Map.Entry<Integer, Float> closestBelow = null;
-        float smallestDifferenceAbove = Float.MAX_VALUE;
-        float smallestDifferenceBelow = Float.MAX_VALUE;
 
         for (Map.Entry<Integer, Float> entry : this.normalizedBrightnessMap.entrySet()) {
-            float difference = entry.getValue() - brightness;
-
-            // If the difference is exactly 0, it's an exact match, return it immediately
-            if (difference == 0) {
-                return new Map.Entry[]{entry, entry};
-            } else if (difference > 0 && difference < smallestDifferenceAbove) { // Round up
-                smallestDifferenceAbove = difference;
+            if (entry.getValue() == MAX_POSSIBLE_BRIGHTNESS){
                 closestAbove = entry;
-            } else if (difference < 0 && -difference < smallestDifferenceBelow) { // Round down
-                smallestDifferenceBelow = -difference;
+            }
+            if (entry.getValue() == MIN_POSSIBLE_BRIGHTNESS){
                 closestBelow = entry;
             }
         }
 
-        return new Map.Entry[]{closestAbove, closestBelow};
-    }
+        float smallestDifferenceAbove = MAX_POSSIBLE_BRIGHTNESS;
+        float smallestDifferenceBelow = -MAX_POSSIBLE_BRIGHTNESS;
 
-    // Select the best match based on the absolute difference between brightness and the entries.
-    private char findClosestMatchBasedOnAbs(Map.Entry<Integer, Float> closestAbove, Map.Entry<Integer,
-            Float> closestBelow, float brightness) {
-        if (closestAbove != null && closestBelow != null) {
-            if (Math.abs(closestAbove.getValue() - brightness) < Math.abs(closestBelow.getValue() - brightness)) {
-                return (char) (int) closestAbove.getKey();
-            } else {
-                return (char) (int) closestBelow.getKey();
+        for (Map.Entry<Integer, Float> entry : this.normalizedBrightnessMap.entrySet()) {
+            float difference = entry.getValue() - brightness;
+            if (difference > 0) {
+                if (difference < smallestDifferenceAbove) {
+                    smallestDifferenceAbove = difference;
+                    closestAbove = entry;
+                }
             }
-        } else if (closestAbove != null) {
-            return (char) (int) closestAbove.getKey();
-        } else {
-            return (char) (int) closestBelow.getKey();
+            if (difference < 0) {
+                if (difference > smallestDifferenceBelow) {
+                    smallestDifferenceBelow = difference;
+                    closestBelow = entry;
+                }
+            }
         }
+
+        if (closestAbove == null || closestBelow == null) {
+            throw new IllegalStateException("No characters in brightness map.");
+        }
+
+        return switch (roundType) {
+            case ABS -> (char) Math.max(Math.abs(closestAbove.getKey()), Math.abs(closestBelow.getKey()));
+            case DOWN -> (char) (int) closestBelow.getKey();
+            case UP -> (char) (int) closestAbove.getKey();
+        };
     }
 
     /**

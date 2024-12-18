@@ -80,4 +80,9 @@ public class SubImgCharMatcher {
     public boolean containsChar(char c) {
         return this.brightnessMap.containsChar(c);
     }
+
+    // TODO: ADD DOC
+    public void setRoundType(RoundType roundType) {
+        this.roundType = roundType;
+    }
 }

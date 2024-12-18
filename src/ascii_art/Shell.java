@@ -29,7 +29,7 @@ public class Shell {
     // Constants for algorithm
     private static final int DEFAULT_RESOLUTION = 2;
     private static final int RESOLUTION_SCALE_FACTOR = 2;
-    private static final String HTML_OUTPUT_PATH = "html.out";
+    private static final String HTML_OUTPUT_PATH = "out.html";
     private static final String HTML_FONT = "New Courier";
 
     private static final String WORDS_SEPARATOR = " ";
@@ -46,6 +46,7 @@ public class Shell {
 
     // Input Messages
     private static final String ENTER_COMMAND_MESSAGE = ">>> ";
+    private static final String RESOLUTION_SET_MESSAGE = "Resolution set to ";
     private static final String EXIT_COMMAND_MESSAGE = "EXIT";
     private static final String VIEW_CHARS = "chars";
     private static final String ADD_CHAR = "add";
@@ -308,8 +309,8 @@ public class Shell {
             throw new InvalidResolutionValueException();
         }
 
-        String formatToRemove = command.split(WORDS_SEPARATOR)[OPERAND_INDEX];
-        int newResolution = switch (formatToRemove) {
+        String resolution = command.split(WORDS_SEPARATOR)[OPERAND_INDEX];
+        int newResolution = switch (resolution) {
             case RESOLUTION_UPSCALE -> this.resolution * RESOLUTION_SCALE_FACTOR;
             case RESOLUTION_DOWNSCALE -> this.resolution / RESOLUTION_SCALE_FACTOR;
             default -> throw new InvalidResolutionFormatException();
@@ -319,6 +320,8 @@ public class Shell {
         } else {
             throw new InvalidResolutionValueException();
         }
+
+        System.out.println(RESOLUTION_SET_MESSAGE + this.resolution);
     }
 
     /**
@@ -344,11 +347,11 @@ public class Shell {
             throw new InvalidOutputFormatException();
         }
 
-        String formatToRemove = command.split(WORDS_SEPARATOR)[OPERAND_INDEX];
-        if (formatToRemove.equals(CONSOLE_OUTPUT)) {
+        String output = command.split(WORDS_SEPARATOR)[OPERAND_INDEX];
+        if (output.equals(CONSOLE_OUTPUT)) {
             this.outputMethod = OutputMethod.CONSOLE;
             this.asciiOutput = new ConsoleAsciiOutput();
-        } else if (formatToRemove.equals(HTML_OUTPUT)) {
+        } else if (output.equals(HTML_OUTPUT)) {
             this.outputMethod = OutputMethod.HTML;
             this.asciiOutput = new HtmlAsciiOutput(HTML_OUTPUT_PATH, HTML_FONT);
         } else {
@@ -370,17 +373,22 @@ public class Shell {
             throw new InvalidRoundFormatException();
         }
 
-        String formatToRemove = command.split(WORDS_SEPARATOR)[OPERAND_INDEX];
-        switch (formatToRemove) {
+        String roundType = command.split(WORDS_SEPARATOR)[OPERAND_INDEX];
+        switch (roundType) {
             case UP_ROUND_TYPE:
                 this.roundType = RoundType.UP;
+                break;
             case DOWN_ROUND_TYPE:
                 this.roundType = RoundType.DOWN;
+                break;
             case ABS_ROUND_TYPE:
                 this.roundType = RoundType.ABS;
+                break;
             default:
                 throw new InvalidRoundFormatException();
         }
+
+        this.charMatcher.setRoundType(this.roundType);
     }
 
 
