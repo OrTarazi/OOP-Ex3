@@ -2,7 +2,13 @@ package image;
 
 import java.awt.*;
 
-// TODO: Add documentation
+/**
+ * This class provides methods for calculating the brightness of an image.
+ * The brightness is determined by converting each pixel to grayscale and averaging
+ * the grayscale values across the entire image.
+ *
+ * @author Or Tarazi, Agam Hershko
+ */
 public class ImageBrightness {
     private static final float RED_FACTOR = 0.2126f;
     private static final float GREEN_FACTOR = 0.7152f;

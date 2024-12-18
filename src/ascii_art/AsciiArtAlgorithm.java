@@ -18,7 +18,17 @@ public class AsciiArtAlgorithm {
     private SubImgCharMatcher charMatcher;
     private int resolution;
 
-    // TODO: constructor doc
+    /**
+     * Constructs a new `AsciiArtAlgorithm` instance.
+     * Initializes the algorithm with the provided image, character matcher, and resolution.
+     * These inputs define the image to be processed, the set of ASCII characters used for brightness mapping,
+     * and the level of detail in the resulting ASCII art.
+     *
+     * @param image      the input image to convert to ASCII art.
+     * @param charMatcher the character matcher responsible for mapping brightness values to ASCII characters.
+     * @param resolution  the resolution of the ASCII art, representing the number of image pixels
+     *                    mapped to a single ASCII character in both dimensions.
+     */
     public AsciiArtAlgorithm(Image image, SubImgCharMatcher charMatcher, int resolution) {
         this.image = image;
         this.charMatcher = charMatcher;
