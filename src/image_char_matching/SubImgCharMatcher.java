@@ -1,5 +1,7 @@
 package image_char_matching;
+
 import ascii_art.RoundType;
+
 /**
  * a facade for using the CharBrightnessMap and so simplifies handling removal and addition of ascii chars
  * to the set.
@@ -12,6 +14,7 @@ public class SubImgCharMatcher {
 
     /**
      * constructor for the matcher
+     *
      * @param charset the initial set of ascii characters to be used in the ascii art.
      */
     public SubImgCharMatcher(char[] charset, RoundType roundType) {
@@ -25,7 +28,7 @@ public class SubImgCharMatcher {
 
     /**
      * **** IMPLEMENTED IN CharBrightnessMap CLASS ****
-     *
+     * <p>
      * searches for the key (Ascii char) with the minimal absolute difference between its value
      * (Brightness) and the given brightness.
      *
@@ -81,7 +84,11 @@ public class SubImgCharMatcher {
         return this.brightnessMap.containsChar(c);
     }
 
-    // TODO: ADD DOC
+    /**
+     * Sets the rounding type for the current object.
+     *
+     * @param roundType The rounding type to be set.
+     */
     public void setRoundType(RoundType roundType) {
         this.roundType = roundType;
     }

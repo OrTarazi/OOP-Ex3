@@ -89,11 +89,12 @@ public class CharBrightnessMap {
         }
 
 
-        return getAbsRoundedChar(closestAbove, closestBelow, brightness, roundType);
+        return getRoundedChar(closestAbove, closestBelow, brightness, roundType);
     }
 
     /**
      * Selects the ASCII character based on the closest brightness values and the specified rounding strategy.
+     * We assume closestAbove and closestBelow will not be both null.
      *
      * @param closestAbove the closest entry with brightness above or equal to the target brightness,
      *                     or null if none.
@@ -106,9 +107,9 @@ public class CharBrightnessMap {
      *                     - DOWN: Select the closest character with brightness below or equal to brightness.
      * @return the ASCII character that matches the target brightness based on the rounding strategy.
      */
-    private char getAbsRoundedChar(Map.Entry<Integer, Float> closestAbove,
-                                   Map.Entry<Integer, Float> closestBelow,
-                                   float brightness, RoundType roundType) {
+    private char getRoundedChar(Map.Entry<Integer, Float> closestAbove,
+                                Map.Entry<Integer, Float> closestBelow,
+                                float brightness, RoundType roundType) {
         return switch (roundType) {
             case ABS -> {
                 if (closestAbove != null && closestBelow != null) {
@@ -120,7 +121,7 @@ public class CharBrightnessMap {
                     }
                 } else if (closestAbove != null) {
                     yield (char) (int) closestAbove.getKey();
-                } else {
+                } else { // closestBelow is not null
                     yield (char) (int) closestBelow.getKey();
                 }
             }
