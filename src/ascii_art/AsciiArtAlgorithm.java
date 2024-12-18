@@ -14,9 +14,9 @@ import image_char_matching.*;
  * @author Or Tarazi, Agam Hershko
  */
 public class AsciiArtAlgorithm {
-    private Image image;
-    private SubImgCharMatcher charMatcher;
-    private int resolution;
+    private final Image image;
+    private final SubImgCharMatcher charMatcher;
+    private final int resolution;
 
     /**
      * Constructs a new `AsciiArtAlgorithm` instance.
@@ -24,7 +24,7 @@ public class AsciiArtAlgorithm {
      * These inputs define the image to be processed, the set of ASCII characters used for brightness mapping,
      * and the level of detail in the resulting ASCII art.
      *
-     * @param image      the input image to convert to ASCII art.
+     * @param image       the input image to convert to ASCII art.
      * @param charMatcher the character matcher responsible for mapping brightness values to ASCII characters.
      * @param resolution  the resolution of the ASCII art, representing the number of image pixels
      *                    mapped to a single ASCII character in both dimensions.

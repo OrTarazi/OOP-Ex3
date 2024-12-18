@@ -16,7 +16,6 @@ public class ImageBrightness {
     private static final int MAX_RGB_VALUE = 255;
 
     /**
-     *
      * @param image calculates the grayscale value of each colored pixel, does an average of all grayscale
      *              values and returns the average, which is the equivalent brightness value of the sub-image.
      * @return the calculated brightness value of a sub-image
@@ -38,6 +37,7 @@ public class ImageBrightness {
     /**
      * uses a formula to calculate the gray-scale from an RGB color, and so converts a set of
      * Red-Green-Blue values to a single value of grayscale.
+     *
      * @param color an RGB color.
      * @return grayscale value.
      */

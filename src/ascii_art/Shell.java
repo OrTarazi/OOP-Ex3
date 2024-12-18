@@ -8,6 +8,7 @@ import exceptions.*;
 import image_char_matching.SubImgCharMatcher;
 
 // TODO: update documentation
+
 /**
  * The Shell class serves as the main control interface for handling and processing images into ASCII art.
  * It provides commands to add, remove characters, change settings like resolution, and convert images to
@@ -69,7 +70,7 @@ public class Shell {
     // private fields
     private int resolution;
     private Image image;
-    private SubImgCharMatcher charMatcher;
+    private final SubImgCharMatcher charMatcher;
     private RoundType roundType;
     private OutputMethod outputMethod;
     private AsciiOutput asciiOutput;
@@ -124,12 +125,15 @@ public class Shell {
 
     /**
      * Processes and executes a given command string.
+     * <p>
      * The method interprets the command, determines the action based on its type,
-     * and performs the appropriate operation.
-     * It supports commands to view characters, add/remove characters, change resolution,
-     * change output settings, and generate ASCII art from the current image.
-     *
-     * <p>In case of invalid commands or exceptions, it prints an appropriate error message.</p>
+     * and performs the appropriate operation. Supported commands include:
+     * - Viewing the current character set.
+     * - Adding or removing characters.
+     * - Changing resolution, output method, or rounding type.
+     * - Generating ASCII art from the current image.
+     * <p>
+     * If an invalid command or exception occurs, an appropriate error message is printed.
      *
      * @param command the command string to process.
      */
@@ -179,7 +183,7 @@ public class Shell {
      * two valid ASCII characters separated by a '-' character.
      *
      * @param format the string to check.
-     * @return true if the string matches the "X-Y" format where X and Y are legal characters, false otherwise.
+     * @return true if the string matches the "X-Y" format where X and Y are legal characters, false otherwise
      */
     private boolean isRangeFormat(String format) {
         return format.length() == (RANGE_END_CHAR_INDEX + 1) &&
@@ -296,12 +300,16 @@ public class Shell {
     }
 
     /**
-     * changes the resolution by multiplying the current resolution by 2 or dividing it by 2.
+     * Changes the resolution of the ASCII art by doubling or halving the current resolution.
      *
-     * @param command "up" for upscale by 2, "down" for downscale by 2.
-     * @throws InvalidResolutionValueException  if the new resolution after the change exceeds the limits
-     *                                          defined in the exercise.
-     * @throws InvalidResolutionFormatException if the user inserted any string other than "up" or "down".
+     * <p>This method adjusts the resolution based on the user's command:
+     * "up" multiplies the resolution by the scaling factor, and "down" divides it by the same factor.
+     * The resolution change is only applied if the resulting value lies within the legal boundaries
+     * defined by the image's dimensions.</p>
+     *
+     * @param command "up" for upscale, "down" for downscale.
+     * @throws InvalidResolutionValueException  if the new resolution exceeds the allowed limits.
+     * @throws InvalidResolutionFormatException if the command is not "up" or "down".
      */
     private void changeResolution(String command)
             throws InvalidResolutionValueException, InvalidResolutionFormatException {
@@ -325,10 +333,14 @@ public class Shell {
     }
 
     /**
-     * checks if the desired resolution stands within the resolution boundaries defined in the exercise.
+     * Checks if the given resolution is within the legal boundaries.
      *
-     * @param inspectedResolution the new resolution being inspected if legal.
-     * @return true if legal, false if not
+     * <p>The minimum resolution is determined by the image's aspect ratio, while the maximum
+     * resolution is constrained by the image's width. The resolution must lie within this range
+     * to be considered valid.</p>
+     *
+     * @param inspectedResolution the resolution to validate.
+     * @return true if the resolution is within the legal range, false otherwise.
      */
     private boolean isResolutionLegal(int inspectedResolution) {
         int maxResolution = this.image.getWidth();
@@ -337,10 +349,13 @@ public class Shell {
     }
 
     /**
-     * changes the output in which the program will print the final result of the ascii-art.
+     * Changes the output method for the ASCII art results.
      *
-     * @param command either "html" or "console" (console is default)
-     * @throws InvalidOutputFormatException if the user inserted any string other than "html" or "console".
+     * <p>The output method determines how the ASCII art is displayed:
+     * "console" outputs the art to the console, while "html" generates an HTML file.</p>
+     *
+     * @param command "console" for console output or "html" for HTML output.
+     * @throws InvalidOutputFormatException if the command is not "console" or "html".
      */
     private void changeOutputMethod(String command) throws InvalidOutputFormatException {
         if (this.isWordsNumberInvalid(command)) {
@@ -360,13 +375,15 @@ public class Shell {
     }
 
     /**
-     * changes the way the SubImageCharMatcher will match the closest char to a given brightness-
-     * 1) absolute "abs" - will return the char in the charset closest in absolute distance.
-     * 2) up "up" - will return the char in the charset closest from the top.
-     * 3) down "down" - will return the char in the charset closest from bottom.
+     * Changes the rounding strategy used for brightness-to-character matching.
      *
-     * @param command "up" for up-rounding, "down" for down-rounding, "abs" for rounding in absolute distance.
-     * @throws InvalidRoundFormatException if user inserted any other string rather than "up", "down" or "abs".
+     * <p>The rounding strategy determines how brightness values are mapped to characters:
+     * - "abs": Selects the character with the smallest absolute brightness difference.
+     * - "up": Selects the closest character from above.
+     * - "down": Selects the closest character from below.</p>
+     *
+     * @param command "up" for up-rounding, "down" for down-rounding, or "abs" for absolute rounding.
+     * @throws InvalidRoundFormatException if the command is not "up", "down", or "abs".
      */
     private void changeRoundType(String command) throws InvalidRoundFormatException {
         if (this.isWordsNumberInvalid(command)) {

@@ -9,7 +9,7 @@ import ascii_art.RoundType;
  * @author Or Tarazi, Agam Hershko
  */
 public class SubImgCharMatcher {
-    private CharBrightnessMap brightnessMap;
+    private final CharBrightnessMap brightnessMap;
     private RoundType roundType;
 
     /**
