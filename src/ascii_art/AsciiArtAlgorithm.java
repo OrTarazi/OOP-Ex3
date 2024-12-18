@@ -17,7 +17,7 @@ public class AsciiArtAlgorithm {
     private Image image;
     private SubImgCharMatcher charMatcher;
     private int resolution;
-    private AsciiArtManager historyManager;
+    private BrightnessMemento brightnessMemento;
     private Image paddedImage;
     private Image[][] subImages;
 
@@ -32,11 +32,11 @@ public class AsciiArtAlgorithm {
      * @param resolution  the resolution of the ASCII art, representing the number of image pixels
      *                    mapped to a single ASCII character in both dimensions.
      */
-    public AsciiArtAlgorithm(Image image, AsciiArtManager historyManager, SubImgCharMatcher charMatcher, int resolution) {
+    public AsciiArtAlgorithm(Image image, BrightnessMemento memento, SubImgCharMatcher charMatcher, int resolution) {
         this.image = image;
         this.charMatcher = charMatcher;
         this.resolution = resolution;
-        this.historyManager = historyManager;
+        this.brightnessMemento = memento;
         this.paddedImage = ImagePadding.padImage(this.image);
         this.subImages = ImageDivision.divideToImages(paddedImage, this.resolution);
 
@@ -50,29 +50,32 @@ public class AsciiArtAlgorithm {
     public char[][] run() {
 
         char[][] asciiImg = new char[subImages.length][subImages[0].length];
-        // if isLastStateValid:
-        if (historyManager.isLastStateValid() && historyManager.lastState.getBrightnessMap() != null) {
-            for (int row = 0; row < subImages.length; row++) {
-                for (int col = 0; col < subImages[row].length; col++) {
-                    float brightness = historyManager.lastState.getBrightnessMap()[row][col];
-                    asciiImg[row][col] = this.charMatcher.getCharByImageBrightness(brightness);
+        float [][] newBrightnessMap = new float[subImages.length][subImages[0].length];
+        for (int row = 0; row < subImages.length; row++) {
+            for (int col = 0; col < subImages[row].length; col++) {
+                float brightness;
+
+                // if the algorithm can avoid unnecessary re-calculation of sub-image brightnesses:
+                if (brightnessMemento.isLastStateValid() && brightnessMemento.restoreState() != null) {
+                    brightness = brightnessMemento.restoreState()[row][col];
                 }
-            }
-        // if !isLastStateValid:
-        } else {
-            float [][] newBrightnessMap = new float[subImages.length][subImages[0].length];
-            for (int row = 0; row < subImages.length; row++) {
-                for (int col = 0; col < subImages[row].length; col++) {
-                    float brightness = ImageBrightness.calculateImageBrightness(subImages[row][col]);
-                    asciiImg[row][col] = this.charMatcher.getCharByImageBrightness(brightness);
+
+                // if the resolution has changed and the algorithm has to re-calculate:
+                else {
+                    brightness = ImageBrightness.calculateImageBrightness(subImages[row][col]);
                     newBrightnessMap[row][col] = brightness;
                 }
+
+                // either way, get the char for the given brightness
+                asciiImg[row][col] = this.charMatcher.getCharByImageBrightness(brightness);
             }
-            this.historyManager.saveState(charMatcher, newBrightnessMap);
-            this.historyManager.setLastStateValidity(true);
         }
 
-
+        // if sub-image brightness calculations were actually made, save them and set them as 'valid' for next run
+        if (!(brightnessMemento.isLastStateValid() && brightnessMemento.restoreState() != null)){
+            this.brightnessMemento.saveState(newBrightnessMap);
+            this.brightnessMemento.setLastStateValidity(true);
+        }
         return asciiImg;
     }
 }

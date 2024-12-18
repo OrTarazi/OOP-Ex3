@@ -73,7 +73,7 @@ public class Shell {
     private RoundType roundType;
     private OutputMethod outputMethod;
     private AsciiOutput asciiOutput;
-    private AsciiArtManager historyManager;
+    private BrightnessMemento historyManager;
     private AsciiArtAlgorithm algorithm;
 
 
@@ -98,7 +98,7 @@ public class Shell {
             charset[charIndex - DEFAULT_FIRST_CHAR] = (char) charIndex;
         }
         this.charMatcher = new SubImgCharMatcher(charset, this.roundType);
-        this.historyManager = new AsciiArtManager(charMatcher, null);
+        this.historyManager = new BrightnessMemento(null);
 
     }
 
