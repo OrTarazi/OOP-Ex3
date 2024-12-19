@@ -1,4 +1,39 @@
 id_214193831, or.tarazi1
 214193831, 208329458
 
-// TODO: write readme
+
+2) We created the CharBrightnessMap that wraps two TreeMap objects (Java.util.Collection). CharBrightnessMap
+has a Composition relations with Java.util.TreeMap.
+First- RawBrightnessMap, in which the keys are the char-set, and the values are un-normalized brightnesses.
+Second- NormalizedBrightnessMap, in which the keys are the char-set too, but values are normalized
+brightnesses of the ascii-chars, and are updated on either removal or addition to the char-set.
+We chose this implementation because we avoid re-calculations of existing char-brightnesses when we add to or
+remove from the charset. Only NormalizedMap will be changed, if needed.
+We chose TreeMap as it is suitable for the program, because each ascii-char has exactly one brightness level.
+also, TreeMap implements NavigableMap, which extends SortedMap, and that way it keeps order of keys. Order is
+important because in case of equality in brightnesses, we want to return the lowest ascii-char.
+TreeMap has logarithmic time complexity for operations like put(), remove(), and containsKey(),  which can be
+beneficial for performance if your character set is large.
+
+3) We created a package 'exceptions' that includes 7 classes, each implements Exception:
+InvalidAddFormatException, InvalidCharsetSizeException, InvalidOutputFormatException,
+InvalidRemoveFormatException, InvalidResolutionFormatException, InvalidResolutionValueException,
+InvalidRoundFormatException.
+For each single scenario with invalid input from any kind in the user-interface, there is a specific exception
+ with an informative message (according to the exercise instructions). Each time the Shell runs runCommand()
+ and faces a conflict, the specific method responsible for the command throws the relevant Exception,
+and Shell catches it and displays the message. That way we managed to take use of Java's exception mechanism
+and handle exceptions caused by user-interface smartly.
+
+4)
+setRoundType() - responsible for adjusting the roundType of the getCharByImageBrightness() method. When user
+wants to change round policy, Shell tells its SubImgCharMatcher to do so, with given roundType
+containsChar() - responsible for communication with the Shell, so Shell 'knows' if the new char is already
+added in the charset, and if so, ignore the 'add' command with this character.
+printChars() for using the 'chars' command. SubImgCharMatcher is responsible for managing and supervising the
+current charset in the program. Shell calls its method printChars, and that's why it's public.
+getCharsNumber() - is important for the Shell to know whether SubImgCharMatcher has a sufficient amount of
+chars in its charset (minimum is 2) and know if the AsciiArtAlgorithm can be run (running with less than two
+chars is considered invalid in the exercise).
+
+
