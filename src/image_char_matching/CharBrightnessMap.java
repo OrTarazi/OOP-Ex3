@@ -6,11 +6,15 @@ import java.util.TreeMap;
 import ascii_art.RoundType;
 
 /**
- * a data structure that wraps two instances of TreeMap from java.Collections.
- * the CharBrightnessMap offers the functionality of a map, but also manages the normalization of the
- * values, which makes it more complex, yet effective.
+ * A data structure that wraps two instances of TreeMap from the Java Collections framework.
+ * The `CharBrightnessMap` maps ASCII characters to brightness values and normalizes them
+ * to allow efficient brightness-based character matching for ASCII art generation.
+ * <p>
+ * Normalization ensures brightness values are linearly scaled between 0 and 1 for consistency
+ * and accurate comparisons.
+ *
+ * @author Or Tarazi, Agam Hershko
  */
-// TODO: FIX DOCUMENTATION
 public class CharBrightnessMap {
     private static final float MIN_POSSIBLE_BRIGHTNESS = 0;
     private static final float MAX_POSSIBLE_BRIGHTNESS = 1;
@@ -89,11 +93,12 @@ public class CharBrightnessMap {
         }
 
 
-        return getAbsRoundedChar(closestAbove, closestBelow, brightness, roundType);
+        return getRoundedChar(closestAbove, closestBelow, brightness, roundType);
     }
 
     /**
      * Selects the ASCII character based on the closest brightness values and the specified rounding strategy.
+     * We assume closestAbove and closestBelow will not be both null.
      *
      * @param closestAbove the closest entry with brightness above or equal to the target brightness,
      *                     or null if none.
@@ -106,9 +111,9 @@ public class CharBrightnessMap {
      *                     - DOWN: Select the closest character with brightness below or equal to brightness.
      * @return the ASCII character that matches the target brightness based on the rounding strategy.
      */
-    private char getAbsRoundedChar(Map.Entry<Integer, Float> closestAbove,
-                                   Map.Entry<Integer, Float> closestBelow,
-                                   float brightness, RoundType roundType) {
+    private static char getRoundedChar(Map.Entry<Integer, Float> closestAbove,
+                                       Map.Entry<Integer, Float> closestBelow,
+                                       float brightness, RoundType roundType) {
         return switch (roundType) {
             case ABS -> {
                 if (closestAbove != null && closestBelow != null) {
@@ -120,7 +125,7 @@ public class CharBrightnessMap {
                     }
                 } else if (closestAbove != null) {
                     yield (char) (int) closestAbove.getKey();
-                } else {
+                } else { // closestBelow is not null
                     yield (char) (int) closestBelow.getKey();
                 }
             }

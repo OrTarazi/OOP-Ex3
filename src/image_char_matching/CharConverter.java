@@ -25,8 +25,8 @@ public class CharConverter {
     public static boolean[][] convertToBoolArray(char c) {
         BufferedImage img = getBufferedImage(c, FONT_NAME, DEFAULT_PIXEL_RESOLUTION);
         boolean[][] matrix = new boolean[DEFAULT_PIXEL_RESOLUTION][DEFAULT_PIXEL_RESOLUTION];
-        for(int y = 0 ; y < DEFAULT_PIXEL_RESOLUTION ; y++) {
-            for(int x = 0 ; x < DEFAULT_PIXEL_RESOLUTION ; x++) {
+        for (int y = 0; y < DEFAULT_PIXEL_RESOLUTION; y++) {
+            for (int x = 0; x < DEFAULT_PIXEL_RESOLUTION; x++) {
                 matrix[y][x] = img.getRGB(x, y) == 0; //is the color black
             }
         }
@@ -39,8 +39,8 @@ public class CharConverter {
         BufferedImage img = new BufferedImage(pixelsPerRow, pixelsPerRow, BufferedImage.TYPE_INT_ARGB);
         Graphics g = img.getGraphics();
         g.setFont(font);
-        int xOffset = (int)Math.round(pixelsPerRow *X_OFFSET_FACTOR);
-        int yOffset = (int)Math.round(pixelsPerRow *Y_OFFSET_FACTOR);
+        int xOffset = (int) Math.round(pixelsPerRow * X_OFFSET_FACTOR);
+        int yOffset = (int) Math.round(pixelsPerRow * Y_OFFSET_FACTOR);
         g.drawString(charStr, xOffset, yOffset);
         return img;
     }
