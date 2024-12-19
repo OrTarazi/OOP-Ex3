@@ -4,6 +4,7 @@ import image.*;
 import image_char_matching.*;
 
 // TODO: change documentation because class has benn changed
+
 /**
  * The class responsible for running the algorithm of converting an image to an Ascii Art.
  * the algorithm works in steps:
@@ -20,6 +21,7 @@ public class AsciiArtAlgorithm {
     private final Image[][] subImages;
 
     // TODO: change documentation because function has benn changed
+
     /**
      * Constructs a new `AsciiArtAlgorithm` instance.
      * Initializes the algorithm with the provided image, character matcher, and resolution.
@@ -40,6 +42,8 @@ public class AsciiArtAlgorithm {
         Image paddedImage = ImagePadding.padImage(image);
         this.subImages = ImageDivision.divideToImages(paddedImage, resolution);
     }
+
+    // TODO: change documentation because function has benn changed
 
     /**
      * runs the algorithm from start to finish.

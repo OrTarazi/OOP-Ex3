@@ -8,6 +8,7 @@ import exceptions.*;
 import image_char_matching.SubImgCharMatcher;
 
 // TODO: change documentation because class has benn changed
+
 /**
  * The Shell class serves as the main control interface for handling and processing images into ASCII art.
  * It provides commands to add, remove characters, change settings like resolution, and convert images to
@@ -73,10 +74,11 @@ public class Shell {
     private RoundType roundType;
     private OutputMethod outputMethod;
     private AsciiOutput asciiOutput;
-    private final BrightnessMemento brightnessMemento;
+    private final BrightnessMemento brightnessHistory; // history of sub-images brightness
     private AsciiArtAlgorithm algorithm;
 
     // TODO: change documentation because function has benn changed
+
     /**
      * Constructs a new `Shell` instance.
      * Initializes the shell with default settings, including setting the resolution and the default
@@ -99,8 +101,10 @@ public class Shell {
         }
 
         this.charMatcher = new SubImgCharMatcher(charset, this.roundType);
-        this.brightnessMemento = new BrightnessMemento(null);
+        this.brightnessHistory = new BrightnessMemento(null);
     }
+
+    // TODO: change documentation because function has benn changed
 
     /**
      * Executes the command loop for the Shell.
@@ -112,19 +116,19 @@ public class Shell {
         try {
             this.image = new Image(imageName);
             this.algorithm = new AsciiArtAlgorithm(
-                    this.image, this.brightnessMemento, this.charMatcher, this.resolution);
+                    this.image, this.brightnessHistory, this.charMatcher, this.resolution);
 
-            String command = this.getCommand();
+            String command = getCommand();
             while (!command.equals(EXIT_COMMAND_MESSAGE)) {
                 this.runCommand(command);
-                command = this.getCommand();
+                command = getCommand();
             }
         } catch (java.io.IOException e) {
             throw new RuntimeException(e);
         }
     }
 
-    private String getCommand() {
+    private static String getCommand() {
         System.out.print(ENTER_COMMAND_MESSAGE);
         return KeyboardInput.readLine();
     }
@@ -191,15 +195,15 @@ public class Shell {
      * @param format the string to check.
      * @return true if the string matches the "X-Y" format where X and Y are legal characters, false otherwise
      */
-    private boolean isRangeFormat(String format) {
+    private static boolean isRangeFormat(String format) {
         return format.length() == (RANGE_END_CHAR_INDEX + 1) &&
-                this.isCharLegal(format.charAt(RANGE_START_CHAR_INDEX)) &&
+                isCharLegal(format.charAt(RANGE_START_CHAR_INDEX)) &&
                 format.charAt(RANGE_SEPARATOR_INDEX) == RANGE_SEPARATOR &&
-                this.isCharLegal(format.charAt(RANGE_END_CHAR_INDEX));
+                isCharLegal(format.charAt(RANGE_END_CHAR_INDEX));
     }
 
     // Check if char is in legal ascii range
-    private boolean isCharLegal(char c) {
+    private static boolean isCharLegal(char c) {
         return FIRST_LEGAL_CHAR <= c && c <= LAST_LEGAL_CHAR;
     }
 
@@ -250,7 +254,7 @@ public class Shell {
         }
 
         String formatToAdd = command.split(WORDS_SEPARATOR)[OPERAND_INDEX];
-        if (this.isRangeFormat(formatToAdd)) {
+        if (isRangeFormat(formatToAdd)) {
             this.applyRangeOperation(formatToAdd, true);
         } else if (formatToAdd.equals(ALL_OPERAND)) {
             for (char c = FIRST_LEGAL_CHAR; c <= LAST_LEGAL_CHAR; c++) {
@@ -284,7 +288,7 @@ public class Shell {
         }
 
         String formatToRemove = command.split(WORDS_SEPARATOR)[OPERAND_INDEX];
-        if (this.isRangeFormat(formatToRemove)) {
+        if (isRangeFormat(formatToRemove)) {
             this.applyRangeOperation(formatToRemove, false);
         } else if (formatToRemove.equals(ALL_OPERAND)) {
             for (char c = FIRST_LEGAL_CHAR; c <= LAST_LEGAL_CHAR; c++) {
@@ -306,6 +310,7 @@ public class Shell {
     }
 
     // TODO: change documentation because function has benn changed
+
     /**
      * Changes the resolution of the ASCII art by doubling or halving the current resolution.
      *
@@ -338,9 +343,9 @@ public class Shell {
             throw new InvalidResolutionValueException();
         }
 
-        this.brightnessMemento.setLastStateValidity(false);
+        this.brightnessHistory.setLastStateValidity(false);
         this.algorithm = new AsciiArtAlgorithm(
-                this.image, this.brightnessMemento, this.charMatcher, this.resolution);
+                this.image, this.brightnessHistory, this.charMatcher, this.resolution);
 
         System.out.println(RESOLUTION_SET_MESSAGE + this.resolution);
     }
@@ -421,6 +426,7 @@ public class Shell {
         this.charMatcher.setRoundType(this.roundType);
     }
 
+    // TODO: change documentation because function has benn changed
 
     /**
      * Executes the ASCII art generation based on the current settings of the shell.
@@ -446,7 +452,7 @@ public class Shell {
      */
     public static void main(String[] args) {
         Shell shell = new Shell();
-        String imageName = args[IMAGE_PATH_ARGS_INDEX]; // Assume valid input: path file
+        String imageName = args[IMAGE_PATH_ARGS_INDEX];
         shell.run(imageName);
     }
 }
