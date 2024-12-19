@@ -3,10 +3,10 @@ package ascii_art;
 // todo: add documentation
 class BrightnessMemento {
     private boolean lastStateValid = true;
-    private float[][] brightnessHistory;
+    private double[][] brightnessHistory;
 
     // todo: add documentation
-    public BrightnessMemento(float[][] subImageBrightnessMatrix) {
+    public BrightnessMemento(double[][] subImageBrightnessMatrix) {
         this.saveState(subImageBrightnessMatrix);
     }
 
@@ -22,13 +22,13 @@ class BrightnessMemento {
 
     // todo: add documentation
     // Save the current state of the originator
-    public void saveState(float[][] subImageBrightnessMatrix) {
+    public void saveState(double[][] subImageBrightnessMatrix) {
         this.brightnessHistory = subImageBrightnessMatrix;
     }
 
     // todo: add documentation
     // Restore the last saved state of the originator
-    public float[][] restoreState() {
+    public double[][] restoreState() {
         return this.brightnessHistory;
     }
 }

@@ -18,9 +18,9 @@ public class CharBrightnessCalculator {
      * The brightness is computed as the ratio of white pixels to the total number of pixels.</p>
      *
      * @param c the character for which brightness is to be calculated.
-     * @return the brightness level as a float between 0 (fully black) and 1 (fully white).
+     * @return the brightness level as a double between 0 (fully black) and 1 (fully white).
      */
-    public static float calculateCharBrightness(char c) {
+    public static double calculateCharBrightness(char c) {
         boolean[][] charBinaryImage = CharConverter.convertToBoolArray(c);
         int totalPixels = charBinaryImage.length * charBinaryImage[0].length;
         int whitePixels = 0;
@@ -33,6 +33,6 @@ public class CharBrightnessCalculator {
             }
         }
 
-        return whitePixels / (float) totalPixels;
+        return whitePixels / (double) totalPixels;
     }
 }

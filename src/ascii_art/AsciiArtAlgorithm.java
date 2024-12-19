@@ -52,11 +52,11 @@ public class AsciiArtAlgorithm {
      */
     public char[][] run() {
         char[][] asciiImg = new char[this.subImages.length][this.subImages[0].length];
-        float[][] newBrightnessMap = new float[this.subImages.length][this.subImages[0].length];
+        double[][] newBrightnessMap = new double[this.subImages.length][this.subImages[0].length];
 
         for (int row = 0; row < this.subImages.length; row++) {
             for (int col = 0; col < this.subImages[row].length; col++) {
-                float brightness;
+                double brightness;
 
                 // if the algorithm can avoid unnecessary re-calculation of sub-image brightnesses:
                 if (this.brightnessMemento.isLastStateValid() &&

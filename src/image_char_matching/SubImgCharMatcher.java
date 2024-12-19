@@ -35,7 +35,7 @@ public class SubImgCharMatcher {
      * @return best matching ascii char for the given brightness value, making it the best fit to represent
      * the sub-image in the final ascii art.
      */
-    public char getCharByImageBrightness(float brightness) {
+    public char getCharByImageBrightness(double brightness) {
         return this.brightnessMap.getCharByNormalizedBrightness(brightness, this.roundType);
     }
 
