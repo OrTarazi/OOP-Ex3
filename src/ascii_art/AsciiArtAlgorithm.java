@@ -3,6 +3,7 @@ package ascii_art;
 import image.*;
 import image_char_matching.*;
 
+// TODO: change documentation because class has benn changed
 /**
  * The class responsible for running the algorithm of converting an image to an Ascii Art.
  * the algorithm works in steps:
@@ -14,32 +15,30 @@ import image_char_matching.*;
  * @author Or Tarazi, Agam Hershko
  */
 public class AsciiArtAlgorithm {
-    private Image image;
-    private SubImgCharMatcher charMatcher;
-    private int resolution;
-    private BrightnessMemento brightnessMemento;
-    private Image paddedImage;
-    private Image[][] subImages;
+    private final SubImgCharMatcher charMatcher;
+    private final BrightnessMemento brightnessMemento;
+    private final Image[][] subImages;
 
+    // TODO: change documentation because function has benn changed
     /**
      * Constructs a new `AsciiArtAlgorithm` instance.
      * Initializes the algorithm with the provided image, character matcher, and resolution.
      * These inputs define the image to be processed, the set of ASCII characters used for brightness mapping,
      * and the level of detail in the resulting ASCII art.
      *
-     * @param image      the input image to convert to ASCII art.
+     * @param image       the input image to convert to ASCII art.
      * @param charMatcher the character matcher responsible for mapping brightness values to ASCII characters.
      * @param resolution  the resolution of the ASCII art, representing the number of image pixels
      *                    mapped to a single ASCII character in both dimensions.
      */
-    public AsciiArtAlgorithm(Image image, BrightnessMemento memento, SubImgCharMatcher charMatcher, int resolution) {
-        this.image = image;
+    public AsciiArtAlgorithm(Image image,
+                             BrightnessMemento memento, // TODO: check warning
+                             SubImgCharMatcher charMatcher,
+                             int resolution) {
         this.charMatcher = charMatcher;
-        this.resolution = resolution;
         this.brightnessMemento = memento;
-        this.paddedImage = ImagePadding.padImage(this.image);
-        this.subImages = ImageDivision.divideToImages(paddedImage, this.resolution);
-
+        Image paddedImage = ImagePadding.padImage(image);
+        this.subImages = ImageDivision.divideToImages(paddedImage, resolution);
     }
 
     /**
@@ -48,21 +47,19 @@ public class AsciiArtAlgorithm {
      * @return a char table of the ascii art
      */
     public char[][] run() {
+        char[][] asciiImg = new char[this.subImages.length][this.subImages[0].length];
+        float[][] newBrightnessMap = new float[this.subImages.length][this.subImages[0].length];
 
-        char[][] asciiImg = new char[subImages.length][subImages[0].length];
-        float [][] newBrightnessMap = new float[subImages.length][subImages[0].length];
-        for (int row = 0; row < subImages.length; row++) {
-            for (int col = 0; col < subImages[row].length; col++) {
+        for (int row = 0; row < this.subImages.length; row++) {
+            for (int col = 0; col < this.subImages[row].length; col++) {
                 float brightness;
 
                 // if the algorithm can avoid unnecessary re-calculation of sub-image brightnesses:
-                if (brightnessMemento.isLastStateValid() && brightnessMemento.restoreState() != null) {
-                    brightness = brightnessMemento.restoreState()[row][col];
-                }
-
-                // if the resolution has changed and the algorithm has to re-calculate:
-                else {
-                    brightness = ImageBrightness.calculateImageBrightness(subImages[row][col]);
+                if (this.brightnessMemento.isLastStateValid() &&
+                        this.brightnessMemento.restoreState() != null) {
+                    brightness = this.brightnessMemento.restoreState()[row][col];
+                } else { // if the resolution has changed and the algorithm has to re-calculate:
+                    brightness = ImageBrightness.calculateImageBrightness(this.subImages[row][col]);
                     newBrightnessMap[row][col] = brightness;
                 }
 
@@ -71,11 +68,12 @@ public class AsciiArtAlgorithm {
             }
         }
 
-        // if sub-image brightness calculations were actually made, save them and set them as 'valid' for next run
-        if (!(brightnessMemento.isLastStateValid() && brightnessMemento.restoreState() != null)){
+        // if sub-image brightness re-calculations were made, save them and set them as 'valid' for next run
+        if (!(this.brightnessMemento.isLastStateValid() && this.brightnessMemento.restoreState() != null)) {
             this.brightnessMemento.saveState(newBrightnessMap);
             this.brightnessMemento.setLastStateValidity(true);
         }
+
         return asciiImg;
     }
 }

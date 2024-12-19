@@ -8,6 +8,7 @@ import exceptions.*;
 import image_char_matching.SubImgCharMatcher;
 
 // TODO: update documentation
+
 /**
  * The Shell class serves as the main control interface for handling and processing images into ASCII art.
  * It provides commands to add, remove characters, change settings like resolution, and convert images to
@@ -69,14 +70,14 @@ public class Shell {
     // private fields
     private int resolution;
     private Image image;
-    private SubImgCharMatcher charMatcher;
+    private final SubImgCharMatcher charMatcher;
     private RoundType roundType;
     private OutputMethod outputMethod;
     private AsciiOutput asciiOutput;
-    private BrightnessMemento historyManager;
+    private final BrightnessMemento brightnessMemento;
     private AsciiArtAlgorithm algorithm;
 
-
+    // TODO: change documentation because function has benn changed
     /**
      * Constructs a new `Shell` instance.
      * Initializes the shell with default settings, including setting the resolution and the default
@@ -97,9 +98,9 @@ public class Shell {
         for (int charIndex = DEFAULT_FIRST_CHAR; charIndex <= DEFAULT_LAST_CHAR; charIndex++) {
             charset[charIndex - DEFAULT_FIRST_CHAR] = (char) charIndex;
         }
-        this.charMatcher = new SubImgCharMatcher(charset, this.roundType);
-        this.historyManager = new BrightnessMemento(null);
 
+        this.charMatcher = new SubImgCharMatcher(charset, this.roundType);
+        this.brightnessMemento = new BrightnessMemento(null);
     }
 
     /**
@@ -111,7 +112,9 @@ public class Shell {
     public void run(String imageName) {
         try {
             this.image = new Image(imageName);
-            this.algorithm = new AsciiArtAlgorithm(this.image, this.historyManager, this.charMatcher, this.resolution);
+            this.algorithm = new AsciiArtAlgorithm(
+                    this.image, this.brightnessMemento, this.charMatcher, this.resolution);
+
             String command = this.getCommand();
             while (!command.equals(EXIT_COMMAND_MESSAGE)) {
                 this.runCommand(command);
@@ -173,7 +176,7 @@ public class Shell {
         }
     }
 
-    private boolean isWordsNumberInvalid(String command) {
+    private static boolean isWordsNumberInvalid(String command) {
         return command.split(WORDS_SEPARATOR).length < MIN_WORDS_FOR_OPERAND_COMMAND;
     }
 
@@ -240,7 +243,7 @@ public class Shell {
      * @throws InvalidAddFormatException if the format of the command is invalid.
      */
     private void addChars(String command) throws InvalidAddFormatException {
-        if (this.isWordsNumberInvalid(command)) {
+        if (isWordsNumberInvalid(command)) {
             throw new InvalidAddFormatException();
         }
 
@@ -274,7 +277,7 @@ public class Shell {
      * @throws InvalidRemoveFormatException if the format of the command is invalid.
      */
     private void removeChars(String command) throws InvalidRemoveFormatException {
-        if (this.isWordsNumberInvalid(command)) {
+        if (isWordsNumberInvalid(command)) {
             throw new InvalidRemoveFormatException();
         }
 
@@ -300,6 +303,7 @@ public class Shell {
         }
     }
 
+    // TODO: change documentation because function has benn changed
     /**
      * changes the resolution by multiplying the current resolution by 2 or dividing it by 2.
      *
@@ -310,23 +314,27 @@ public class Shell {
      */
     private void changeResolution(String command)
             throws InvalidResolutionValueException, InvalidResolutionFormatException {
-        if (this.isWordsNumberInvalid(command)) {
+        if (isWordsNumberInvalid(command)) {
             throw new InvalidResolutionValueException();
         }
 
+        // TODO: add comments to function
         String resolution = command.split(WORDS_SEPARATOR)[OPERAND_INDEX];
         int newResolution = switch (resolution) {
             case RESOLUTION_UPSCALE -> this.resolution * RESOLUTION_SCALE_FACTOR;
             case RESOLUTION_DOWNSCALE -> this.resolution / RESOLUTION_SCALE_FACTOR;
             default -> throw new InvalidResolutionFormatException();
         };
+
         if (this.isResolutionLegal(newResolution)) {
             this.resolution = newResolution;
         } else {
             throw new InvalidResolutionValueException();
         }
-        historyManager.setLastStateValidity(false);
-        this.algorithm = new AsciiArtAlgorithm(this.image, this.historyManager, this.charMatcher, this.resolution);
+
+        this.brightnessMemento.setLastStateValidity(false);
+        this.algorithm = new AsciiArtAlgorithm(
+                this.image, this.brightnessMemento, this.charMatcher, this.resolution);
 
         System.out.println(RESOLUTION_SET_MESSAGE + this.resolution);
     }
@@ -350,7 +358,7 @@ public class Shell {
      * @throws InvalidOutputFormatException if the user inserted any string other than "html" or "console".
      */
     private void changeOutputMethod(String command) throws InvalidOutputFormatException {
-        if (this.isWordsNumberInvalid(command)) {
+        if (isWordsNumberInvalid(command)) {
             throw new InvalidOutputFormatException();
         }
 
@@ -376,7 +384,7 @@ public class Shell {
      * @throws InvalidRoundFormatException if user inserted any other string rather than "up", "down" or "abs".
      */
     private void changeRoundType(String command) throws InvalidRoundFormatException {
-        if (this.isWordsNumberInvalid(command)) {
+        if (isWordsNumberInvalid(command)) {
             throw new InvalidRoundFormatException();
         }
 
@@ -396,7 +404,8 @@ public class Shell {
         }
 
         this.charMatcher.setRoundType(this.roundType);
-        this.algorithm = new AsciiArtAlgorithm(this.image, this.historyManager, this.charMatcher, this.resolution);
+        this.algorithm = new AsciiArtAlgorithm(
+                this.image, this.brightnessMemento, this.charMatcher, this.resolution);
     }
 
 
@@ -410,10 +419,7 @@ public class Shell {
             throw new InvalidCharsetSizeException();
         }
 
-        // TODO: Check if can we prevent repeated creation
-
         char[][] asciiImage = this.algorithm.run();
-
         this.asciiOutput.out(asciiImage);
     }
 
