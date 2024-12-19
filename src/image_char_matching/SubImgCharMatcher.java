@@ -17,9 +17,8 @@ public class SubImgCharMatcher {
      *
      * @param charset the initial set of ascii characters to be used in the ascii art.
      */
-    public SubImgCharMatcher(char[] charset, RoundType roundType) {
+    public SubImgCharMatcher(char[] charset) {
         this.brightnessMap = new CharBrightnessMap();
-        this.roundType = roundType;
 
         for (char c : charset) {
             this.addChar(c);

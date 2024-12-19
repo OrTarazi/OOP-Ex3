@@ -100,7 +100,9 @@ public class Shell {
             charset[charIndex - DEFAULT_FIRST_CHAR] = (char) charIndex;
         }
 
-        this.charMatcher = new SubImgCharMatcher(charset, this.roundType);
+        this.charMatcher = new SubImgCharMatcher(charset);
+        this.charMatcher.setRoundType(this.roundType);
+
         this.brightnessHistory = new BrightnessMemento(null);
     }
 
