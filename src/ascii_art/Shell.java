@@ -7,8 +7,7 @@ import image.Image;
 import exceptions.*;
 import image_char_matching.SubImgCharMatcher;
 
-// TODO: update documentation
-
+// TODO: change documentation because class has benn changed
 /**
  * The Shell class serves as the main control interface for handling and processing images into ASCII art.
  * It provides commands to add, remove characters, change settings like resolution, and convert images to
@@ -404,8 +403,6 @@ public class Shell {
         }
 
         this.charMatcher.setRoundType(this.roundType);
-        this.algorithm = new AsciiArtAlgorithm(
-                this.image, this.brightnessMemento, this.charMatcher, this.resolution);
     }
 
 
