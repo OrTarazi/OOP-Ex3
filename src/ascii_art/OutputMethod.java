@@ -18,3 +18,5 @@ public enum OutputMethod {
      */
     CONSOLE
 }
+
+// TODO: REMOVE VALUES METHODS FROM UML

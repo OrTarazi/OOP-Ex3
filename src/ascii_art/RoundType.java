@@ -29,3 +29,5 @@ public enum RoundType {
      */
     ABS
 }
+
+// TODO: REMOVE VALUES METHODS FROM UML
