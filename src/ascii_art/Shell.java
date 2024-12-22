@@ -7,12 +7,13 @@ import image.Image;
 import exceptions.*;
 import image_char_matching.SubImgCharMatcher;
 
-// TODO: change documentation because class has benn changed
+
 
 /**
  * The Shell class serves as the main control interface for handling and processing images into ASCII art.
  * It provides commands to add, remove characters, change settings like resolution, and convert images to
- * ASCII art.
+ * ASCII art. Shell's methods throw Exceptions such as 'InvalidCharsetSizeException' and
+ * 'InvalidRoundFormatException' and handles input errors that way.
  *
  * <p>This class uses a `CharBrightnessMap` to manage the character set and brightness mappings,
  * and an `Image` object to perform image processing.</p>
@@ -77,13 +78,14 @@ public class Shell {
     private final BrightnessMemento brightnessHistory; // history of sub-images brightness
     private AsciiArtAlgorithm algorithm;
 
-    // TODO: change documentation because function has benn changed
+
 
     /**
      * Constructs a new `Shell` instance.
      * Initializes the shell with default settings, including setting the resolution and the default
      * character set.
-     * The default character set includes all ASCII characters from '0' to '9' and the space character.
+     * The default character set includes all ASCII characters from '0' to '9' and the space character,
+     * the default output method is printing to console, and rounding by absolute distance by default.
      *
      * <p>The constructor sets up the character matcher with the initial character set required for ASCII
      * art operations.</p>
@@ -106,7 +108,6 @@ public class Shell {
         this.brightnessHistory = new BrightnessMemento(null);
     }
 
-    // TODO: change documentation because function has benn changed
 
     /**
      * Executes the command loop for the Shell.
@@ -130,6 +131,10 @@ public class Shell {
         }
     }
 
+    /**
+     * Stores the user's input into a string for later use in runCommand()
+     * @return User's input as a string
+     */
     private static String getCommand() {
         System.out.print(ENTER_COMMAND_MESSAGE);
         return KeyboardInput.readLine();
@@ -311,7 +316,6 @@ public class Shell {
         }
     }
 
-    // TODO: change documentation because function has benn changed
 
     /**
      * Changes the resolution of the ASCII art by doubling or halving the current resolution.
@@ -320,6 +324,9 @@ public class Shell {
      * "up" multiplies the resolution by the scaling factor, and "down" divides it by the same factor.
      * The resolution change is only applied if the resulting value lies within the legal boundaries
      * defined by the image's dimensions.</p>
+     *
+     * A new instance of AsciiArtAlgorithm is created and the current AsciiArtAlgorithm instance is replaced
+     * upon resolution change.
      *
      * @param command "up" for upscale, "down" for downscale.
      * @throws InvalidResolutionValueException  if the new resolution exceeds the allowed limits.
@@ -331,24 +338,26 @@ public class Shell {
             throw new InvalidResolutionValueException();
         }
 
-        // TODO: add comments to function
+
         String resolution = command.split(WORDS_SEPARATOR)[OPERAND_INDEX];
         int newResolution = switch (resolution) {
+            // checks if the input is valid and if so, calculate the resolution after the requested change:
             case RESOLUTION_UPSCALE -> this.resolution * RESOLUTION_SCALE_FACTOR;
             case RESOLUTION_DOWNSCALE -> this.resolution / RESOLUTION_SCALE_FACTOR;
             default -> throw new InvalidResolutionFormatException();
         };
 
         if (this.isResolutionLegal(newResolution)) {
-            this.resolution = newResolution;
+            this.resolution = newResolution; // upscale & downscale ONLY if the new resolution is permitted.
         } else {
             throw new InvalidResolutionValueException();
         }
-
+        // let the algorithm know the resolution has been changed, and now brightness calculations are needed.
         this.brightnessHistory.setLastStateValidity(false);
+        // create a new algorithm and replace the current one
         this.algorithm = new AsciiArtAlgorithm(
                 this.image, this.brightnessHistory, this.charMatcher, this.resolution);
-
+        // inform the user that the resolution has been changed + the new resolution value
         System.out.println(RESOLUTION_SET_MESSAGE + this.resolution);
     }
 
@@ -428,10 +437,10 @@ public class Shell {
         this.charMatcher.setRoundType(this.roundType);
     }
 
-    // TODO: change documentation because function has benn changed
 
     /**
      * Executes the ASCII art generation based on the current settings of the shell.
+     * The run is valid only if the charset is of size 2 or greater.
      *
      * @throws InvalidCharsetSizeException if the character set size is too small to perform ASCII art.
      */

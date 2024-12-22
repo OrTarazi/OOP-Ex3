@@ -1,7 +1,50 @@
 id_214193831, or.tarazi1
 214193831, 208329458
 
-1) //TODO: according to uml, explain the role of every class and the connection between the classes
+1)
+The AsciiArtAlgorithm class is the core of the process. It handles the conversion of an input image  into
+ASCII art. It divides the image into smaller sub-images for processing, calculates the brightness of
+each sub-image, and maps the brightness to corresponding ASCII characters. It uses the SubImgCharMatcher to
+find the appropriate ASCII character based on brightness levels. Additionally, the class integrates with a
+BrightnessMemento object to store previously calculated brightness values, reducing redundant computations
+when rerunning with the same settings.
+
+The BrightnessMemento class is a utility designed to manage the brightness values of sub-images.  It acts as a
+memory for the last run's brightness calculations, storing them in a matrix. This allows the algorithm to
+reuse these values instead of recalculating brightness for the same image and settings, improving efficiency.
+
+The SubImgCharMatcher class handles the mapping between brightness values and ASCII characters.  It uses a
+CharBrightnessMap to maintain a set of characters and their normalized brightness levels. The class determines
+which character best matches a given brightness level, with support for various rounding strategies (e.g.,
+rounding up, down, or using absolute differences).
+
+The CharBrightnessMap class provides a data structure to manage brightness values of ASCII characters.  It
+calculates the brightness of characters, normalizes these values to fit within a consistent range, and
+efficiently finds characters that match specific brightness levels. It ensures that the brightness mapping is
+dynamic and adjusts as characters are added or removed.
+
+The Image class represents an image loaded from a file. It stores the image as a 2D array of pixel colors  and
+provides access to pixel data, image dimensions, and methods for saving the image after processing.  It
+serves as the foundational data structure for handling image-related operations.
+
+The ImagePadding class ensures that images are padded to dimensions that align with power-of-two sizes,  which
+may be required by certain algorithms. It adds white padding around the image if necessary, preserving the
+original content.
+
+The ImageDivision class divides the input image into smaller sub-images based on the specified resolution.
+Each sub-image corresponds to a region of the original image, and this division is crucial for processing the
+image at a finer granularity.
+
+The ImageBrightness class calculates the brightness of a given image or sub-image. It converts the pixel
+colors to grayscale and computes an average brightness value, which is then used in the ASCII mapping process.
+
+Finally, the Shell class serves as the user interface, allowing commands to be executed interactively.  It
+manages input from the user, adjusts parameters like resolution and character sets, and invokes the
+AsciiArtAlgorithm to generate ASCII art based on the current settings.
+
+Together, these classes form a cohesive system where the AsciiArtAlgorithm orchestrates the process,  relying
+on helper classes for specific tasks like image handling, brightness calculations, and ASCII character
+mapping. The Shell acts as the control point, enabling user interaction and customization.
 
 2) We created the CharBrightnessMap that wraps two TreeMap objects (Java.util.Collection). CharBrightnessMap
 has a Composition relations with Java.util.TreeMap.
@@ -37,6 +80,18 @@ getCharsNumber() - is important for the Shell to know whether SubImgCharMatcher 
 chars in its charset (minimum is 2) and know if the AsciiArtAlgorithm can be run (running with less than two
 chars is considered invalid in the exercise).
 
-5)//TODO: EXPLAIN CHANGE IN CONSTRUCTOR OF AsciiArtAlgoritm (gets charMatcher and not charset and gets mamento)
+5) AsciiArtAlgorithm's constructor receives as parameter a SubImgCharMatcher object instead of charset. We
+chose to do so because it is more convenient to let the charMatcher take responsibility of holding and
+managing the active charset, instead of the algorithm itself. In addition, charMatcher object include other
+data such as round policy.
+AsciiArtAlgorithm instances are created with a BrightnessMemento objects so they can store and restore
+previous sub-image calculations that were made in the last run. we chose to create the memento class by the
+Shell, so it can be passed to the algorithm object on creation via constructor, and the Shell can provide
+information on whether the algorithm needs to make re-calculations or it can use its memento object to re-load
+ the brightnesses calculated in the last run.
+
+
+
+
 
 

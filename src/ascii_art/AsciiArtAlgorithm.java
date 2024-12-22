@@ -3,7 +3,7 @@ package ascii_art;
 import image.*;
 import image_char_matching.*;
 
-// TODO: change documentation because class has benn changed
+
 
 /**
  * The class responsible for running the algorithm of converting an image to an Ascii Art.
@@ -13,6 +13,10 @@ import image_char_matching.*;
  * 3. calculates for each sub-image its brightness
  * 4. matches an ascii char for the calculated brightness.
  *
+ * Each algorithm instance is supplied with a memento object for communication with the Shell, and for
+ * storing the last run's sub-image brightnesses, that way - some repeated calculations can be avoided.
+ *
+ *
  * @author Or Tarazi, Agam Hershko
  */
 public class AsciiArtAlgorithm {
@@ -20,7 +24,6 @@ public class AsciiArtAlgorithm {
     private final BrightnessMemento brightnessMemento;
     private final Image[][] subImages;
 
-    // TODO: change documentation because function has benn changed
 
     /**
      * Constructs a new `AsciiArtAlgorithm` instance.
@@ -32,6 +35,8 @@ public class AsciiArtAlgorithm {
      * @param charMatcher the character matcher responsible for mapping brightness values to ASCII characters.
      * @param resolution  the resolution of the ASCII art, representing the number of image pixels
      *                    mapped to a single ASCII character in both dimensions.
+     * @param memento     The memento object for restoring last run's sub-image brightnesses
+     *
      */
     public AsciiArtAlgorithm(Image image,
                              BrightnessMemento memento, // TODO: check warning
@@ -43,10 +48,11 @@ public class AsciiArtAlgorithm {
         this.subImages = ImageDivision.divideToImages(paddedImage, resolution);
     }
 
-    // TODO: change documentation because function has benn changed
 
     /**
-     * runs the algorithm from start to finish.
+     * runs the algorithm from start to finish. Takes advantage of previous runs with same parameters, and
+     * when calculates brightnesses of sub-images, stores them in a memento-like class so it could be
+     * easily restored for later run on same parameters (can only keep the last run's brightnesses)
      *
      * @return a char table of the ascii art
      */
@@ -72,10 +78,10 @@ public class AsciiArtAlgorithm {
             }
         }
 
-        // if sub-image brightness re-calculations were made, save them and set them as 'valid' for next run
+        // if sub-image brightness re-calculations were made, save them and set them as 'valid' for next run:
         if (!(this.brightnessMemento.isLastStateValid() && this.brightnessMemento.restoreState() != null)) {
-            this.brightnessMemento.saveState(newBrightnessMap);
-            this.brightnessMemento.setLastStateValidity(true);
+            this.brightnessMemento.saveState(newBrightnessMap); // store the brightnesses in memento
+            this.brightnessMemento.setLastStateValidity(true); // unless was toggled by Shell, can use later.
         }
 
         return asciiImg;
