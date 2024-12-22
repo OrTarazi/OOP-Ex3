@@ -1,5 +1,6 @@
 id_214193831, or.tarazi1
 214193831, 208329458
+1)
 
 
 2) We created the CharBrightnessMap that wraps two TreeMap objects (Java.util.Collection). CharBrightnessMap
@@ -35,5 +36,7 @@ current charset in the program. Shell calls its method printChars, and that's wh
 getCharsNumber() - is important for the Shell to know whether SubImgCharMatcher has a sufficient amount of
 chars in its charset (minimum is 2) and know if the AsciiArtAlgorithm can be run (running with less than two
 chars is considered invalid in the exercise).
+
+5) no change was made to the supplied code (added documentation where was missing)
 
 
