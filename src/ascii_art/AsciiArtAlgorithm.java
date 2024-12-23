@@ -4,7 +4,6 @@ import image.*;
 import image_char_matching.*;
 
 
-
 /**
  * The class responsible for running the algorithm of converting an image to an Ascii Art.
  * the algorithm works in steps:
@@ -12,10 +11,9 @@ import image_char_matching.*;
  * 2. divides the image to sub-images, and pads with zero if needed.
  * 3. calculates for each sub-image its brightness
  * 4. matches an ascii char for the calculated brightness.
- *
+ * <p>
  * Each algorithm instance is supplied with a memento object for communication with the Shell, and for
  * storing the last run's sub-image brightnesses, that way - some repeated calculations can be avoided.
- *
  *
  * @author Or Tarazi, Agam Hershko
  */
@@ -36,10 +34,9 @@ public class AsciiArtAlgorithm {
      * @param resolution  the resolution of the ASCII art, representing the number of image pixels
      *                    mapped to a single ASCII character in both dimensions.
      * @param memento     The memento object for restoring last run's sub-image brightnesses
-     *
      */
     public AsciiArtAlgorithm(Image image,
-                             BrightnessMemento memento, // TODO: check warning
+                             BrightnessMemento memento,
                              SubImgCharMatcher charMatcher,
                              int resolution) {
         this.charMatcher = charMatcher;

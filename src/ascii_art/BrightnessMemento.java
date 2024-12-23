@@ -4,6 +4,7 @@ package ascii_art;
  * A memento-like class for storing and restoring sub-image brightnesses that are calculated once.
  * AsciiArtAlgorithm holds an instance of BrightnessMemento, and uses it to update it (save) when
  * calculations are made, and if run parameters haven't changed - would be restored and re-used.
+ *
  * @author Or Tarazi, Agam Hershko
  */
 class BrightnessMemento {
@@ -11,7 +12,8 @@ class BrightnessMemento {
     private double[][] brightnessHistory;
 
     /**
-     *  creates a new instance of the memento object.
+     * creates a new instance of the memento object.
+     *
      * @param subImageBrightnessMatrix the initial brightnesses to be saved
      */
     public BrightnessMemento(double[][] subImageBrightnessMatrix) {
@@ -21,6 +23,7 @@ class BrightnessMemento {
 
     /**
      * get the validity status of the last state
+     *
      * @return last state validity
      */
     public boolean isLastStateValid() {
@@ -36,6 +39,7 @@ class BrightnessMemento {
 
     /**
      * stores the brightnesses of sub-images
+     *
      * @param subImageBrightnessMatrix the sub-images brightnesses matrix to be stored in memento
      */
 
@@ -45,6 +49,7 @@ class BrightnessMemento {
 
     /**
      * on demand, returns the brightnesses from earlier
+     *
      * @return saved brightnesses from last run
      */
     public double[][] restoreState() {

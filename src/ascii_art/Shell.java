@@ -8,7 +8,6 @@ import exceptions.*;
 import image_char_matching.SubImgCharMatcher;
 
 
-
 /**
  * The Shell class serves as the main control interface for handling and processing images into ASCII art.
  * It provides commands to add, remove characters, change settings like resolution, and convert images to
@@ -79,13 +78,13 @@ public class Shell {
     private AsciiArtAlgorithm algorithm;
 
 
-
     /**
      * Constructs a new `Shell` instance.
      * Initializes the shell with default settings, including setting the resolution and the default
      * character set.
      * The default character set includes all ASCII characters from '0' to '9' and the space character,
      * the default output method is printing to console, and rounding by absolute distance by default.
+     * The memento is initialized to manage and save the brightness history for potential restoration.
      *
      * <p>The constructor sets up the character matcher with the initial character set required for ASCII
      * art operations.</p>
@@ -133,6 +132,7 @@ public class Shell {
 
     /**
      * Stores the user's input into a string for later use in runCommand()
+     *
      * @return User's input as a string
      */
     private static String getCommand() {
@@ -324,7 +324,7 @@ public class Shell {
      * "up" multiplies the resolution by the scaling factor, and "down" divides it by the same factor.
      * The resolution change is only applied if the resulting value lies within the legal boundaries
      * defined by the image's dimensions.</p>
-     *
+     * <p>
      * A new instance of AsciiArtAlgorithm is created and the current AsciiArtAlgorithm instance is replaced
      * upon resolution change.
      *
