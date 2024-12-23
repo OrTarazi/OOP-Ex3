@@ -1,15 +1,14 @@
 id_214193831, or.tarazi1
 214193831, 208329458
 
-1)
-The AsciiArtAlgorithm class is the core of the process. It handles the conversion of an input image  into
+1) The AsciiArtAlgorithm class is the core of the process. It handles the conversion of an input image into
 ASCII art. It divides the image into smaller sub-images for processing, calculates the brightness of
 each sub-image, and maps the brightness to corresponding ASCII characters. It uses the SubImgCharMatcher to
 find the appropriate ASCII character based on brightness levels. Additionally, the class integrates with a
 BrightnessMemento object to store previously calculated brightness values, reducing redundant computations
 when rerunning with the same settings.
 
-The BrightnessMemento class is a utility designed to manage the brightness values of sub-images.  It acts as a
+The BrightnessMemento class is a utility designed to manage the brightness values of sub-images. It acts as a
 memory for the last run's brightness calculations, storing them in a matrix. This allows the algorithm to
 reuse these values instead of recalculating brightness for the same image and settings, improving efficiency.
 
@@ -69,9 +68,8 @@ and faces a conflict, the specific method responsible for the command throws the
 and Shell catches it and displays the message. That way we managed to take use of Java's exception mechanism
 and handle exceptions caused by user-interface smartly.
 
-4)
-setRoundType() - responsible for adjusting the roundType of the getCharByImageBrightness() method. When user
-wants to change round policy, Shell tells its SubImgCharMatcher to do so, with given roundType
+4) setRoundType() - responsible for adjusting the roundType of the getCharByImageBrightness() method. When
+user wants to change round policy, Shell tells its SubImgCharMatcher to do so, with given roundType
 containsChar() - responsible for communication with the Shell, so Shell 'knows' if the new char is already
 added in the charset, and if so, ignore the 'add' command with this character.
 printChars() for using the 'chars' command. SubImgCharMatcher is responsible for managing and supervising the
@@ -88,7 +86,7 @@ AsciiArtAlgorithm instances are created with a BrightnessMemento objects so they
 previous sub-image calculations that were made in the last run. we chose to create the memento class by the
 Shell, so it can be passed to the algorithm object on creation via constructor, and the Shell can provide
 information on whether the algorithm needs to make re-calculations or it can use its memento object to re-load
- the brightnesses calculated in the last run.
+the brightnesses calculated in the last run.
 
 
 
